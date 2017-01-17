@@ -150,7 +150,7 @@ window.SE = function (e) {
             });
         }else {
             if(callBack.OnError){
-                callBack.OnError("Connection Lost.");
+                callBack.OnError({method:"connection",message: "Connection Lost."});
             }
         }
     }
@@ -164,7 +164,7 @@ window.SE = function (e) {
         }
         else {
             if(callBack.OnError){
-                callBack.OnError("Connection Lost.");
+                callBack.OnError({method:"connection",message: "Connection Lost."});
             }
         }
     }
@@ -180,7 +180,7 @@ window.SE = function (e) {
         }
         else {
             if(callBack.OnError){
-                callBack.OnError("Connection Lost.");
+                callBack.OnError({method:"connection",message: "Connection Lost."});
             }
         }
     }
@@ -193,7 +193,7 @@ window.SE = function (e) {
         }
         else {
             if(callBack.OnError){
-                callBack.OnError("Connection Lost.");
+                callBack.OnError({method:"connection",message: "Connection Lost."});
             }
         }
     }
@@ -206,7 +206,33 @@ window.SE = function (e) {
         }
         else {
             if(callBack.OnError){
-                callBack.OnError("Connection Lost.");
+                callBack.OnError({method:"connection",message: "Connection Lost."});
+            }
+        }
+    }
+
+    function vm(e) {
+        if (!e)throw g;
+        var r = v(e, "type");
+        if (connected) {
+            if(r==="previous"){
+                socket.emit('request',{request:'oldmessages', from:v(e, "from"), to: v(e, "to"), id:v(e, "id")});
+            }
+            else if(r==="next"){
+                socket.emit('request',{request:'newmessages', from:v(e, "from"), to: v(e, "to"), id:v(e, "id")});
+            }
+            else if(r==="allstatus"){
+                socket.emit('request',{request:'allstatus'});
+            }
+            else{
+                if(callBack.OnError){
+                    callBack.OnError({method:"viewmessage",message: "Invalid View Type."});
+                }
+            }
+        }
+        else {
+            if(callBack.OnError){
+                callBack.OnError({method:"connection",message: "Connection Lost."});
             }
         }
     }
@@ -216,5 +242,5 @@ window.SE = function (e) {
     }
 
     var  g = "must pass an object";
-    return {"authenticate": n, "init": r, "sendmessage": m,"seen":s,"typing":t,"acceptclient":c,"disconnect":d,"status":o}
+    return {"authenticate": n, "init": r, "sendmessage": m,"request":vm, "seen":s,"typing":t,"acceptclient":c,"disconnect":d,"status":o}
 }();
