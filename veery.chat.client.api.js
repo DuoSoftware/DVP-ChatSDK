@@ -224,6 +224,9 @@ window.SE = function (e) {
             else if(r==="allstatus"){
                 socket.emit('request',{request:'allstatus'});
             }
+            else if(r==="latestmessages"){
+                socket.emit('request',{request:'latestmessages', from:v(e, "from")});
+            }
             else{
                 if(callBack.OnError){
                     callBack.OnError({method:"viewmessage",message: "Invalid View Type."});
