@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head><title>Hello world</title></head>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script src="veery.chat.client.api.js"></script>
+<link href="sdk.css" rel="stylesheet">
+
+<script>
+
+    var OnConnected =function () {
+        console.log("OnConnected..............");
+
+        var token = document.getElementById('Token');
+
+
+        SE.authenticate({
+            success: function(data) {
+                console.log("authenticate..............");
+                showElem();
+            },
+            error: function(data) {
+                console.log("authenticate error..............");
+            },
+            token: token.value
+        });
+
+    };
+    var OnEcho = function (o) {
+        console.log("OnEcho..............");
+    };
+
+    var OnEvent = function (o) {
+        console.log("OnEvent..............");
+    };
+
+    var OnStatus =function (o) {
+        console.log("OnStatus..............");
+        document.getElementById('presenceOth').innerHTML = JSON.stringify(o);
+    };
+
+    var OnMessage =function (o) {
+        console.log("OnMessage..............");
+        document.getElementById('typing').innerHTML = "";
+        document.getElementById('newmsg').value = JSON.stringify(o);
+
+    };
+    var OnSeen =function (o) {
+        console.log("OnSeen..............");
+    };
+    var OnTyping =function (o) {
+        console.log("OnTyping..............");
+        document.getElementById('typing').innerHTML = "Typing..............";
+    };
+
+    var OnTypingstoped =function (o) {
+        console.log("OnTypingstoped..............");
+        document.getElementById('typing').innerHTML = "";
+    };
+
+    var OnDisconnect =function (o) {
+        console.log("OnDisconnect..............");
+        hideElem();
+    };
+
+    var OnClient =function (o) {
+        console.log("OnClient..............");
+    };
+
+    var OnError =function (o) {
+        console.log("OnError..............");
+    };
+
+    var OnAccept =function (o) {
+        console.log("OnAccept..............");
+    };
+
+    var callBackEvents = {
+        OnConnected : OnConnected,
+        OnEcho:OnEcho,
+        OnEvent:OnEvent,
+        OnStatus:OnStatus,
+        OnMessage:OnMessage,
+        OnSeen:OnSeen,
+        OnTyping:OnTyping,
+        OnTypingstoped:OnTypingstoped,
+        OnDisconnect:OnDisconnect,
+        OnClient:OnClient,
+        OnAccept:OnAccept,
+        OnError:OnError
+
+    };
+
+    var connect = function () {
+        SE.init({
+            serverUrl: 'http://localhost:3333/',
+            callBackEvents: callBackEvents
+        });
+    };
+
+    var disconnect = function () {
+        SE.disconnect();
+        hideElem();
+    };
+
+    var typing = function () {
+        var user = document.getElementById('user');
+        var message = {'to':user.value};
+        SE.typing(message);
+    };
+
+    function sendMsg() {
+        var userPass = document.getElementById('msg');
+        var user = document.getElementById('user');
+        var message = {'to':user.value,'message':userPass.value,'type':"text"};
+        SE.sendmessage( message);
+    }
+
+    function setStatus() {
+        var user = document.getElementById('presence');
+        var message = {'presence':user.value};
+        SE.status( message);
+    }
+
+</script>
+<!--<script>
+
+
+    var connected = false;
+    var socket = {};
+
+    var callBack = {
+        onSipEventSession: $scope.veeryPhone.onSipEventSession
+    };
+
+    var initiateConnection =function () {
+         socket = io('http://localhost:3333/');
+    };
+    initiateConnection();
+    socket.on('connect', function(){
+
+        console.log("connected");
+
+        socket.emit('authenticate', {token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdWtpdGhhIiwianRpIjoiMTdmZTE4M2QtM2QyNC00NjQwLTg1NTgtNWFkNGQ5YzVlMzE1Iiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjE4OTMzMDI3NTMsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NjEyOTkxNTN9.YiocvxO_cVDzH5r67-ulcDdBkjjJJDir2AeSe3jGYeA"});
+
+    });
+
+    socket.on('echo', function(data){
+
+        console.log(data);
+    });
+
+    socket.on('unauthorized', function(msg) {
+        console.log("unauthorized: " + JSON.stringify(msg.data));
+        throw new Error(msg.data.type);
+    });
+
+    socket.on('authenticated', function () {
+
+        socket.emit( 'status', {presence: 'online'});
+        socket.emit( 'message', {message: 'test', to: 'sukitha'});
+    });
+
+    socket.on('event', function(data){
+
+        console.log(data);
+    });
+
+    socket.on('status', function(data){
+
+        console.log(data);
+    });
+
+    socket.on('message', function(data){
+
+        console.log(data);
+
+        socket.emit('seen',{to: data.to, uuid: data.id});
+
+    });
+
+    socket.on('seen', function(data){
+
+        console.log(data);
+    });
+
+    socket.on('typing', function(data){
+
+        console.log(data);
+    });
+
+    socket.on('disconnect', function(data){
+
+        console.log("disconnected");
+    });
+
+    function sendMessage() {
+        var userPass = document.getElementById('name');
+        var message = userPass.value;
+        // if there is a non-empty message and a socket connection
+        if (message && connected) {
+            // tell server to execute 'new message' and send along one parameter
+            socket.emit('new message', {
+                username: "testclient",
+                message: message
+            });
+        }
+    }
+</script>-->
+<body>
+<div id="error-container"></div>
+<div class="buttons">
+
+    <input class="positive" id="Token" type="text" name="name" value="" placeholder="Enter Token">
+    <br>
+    <div class="buttons">
+        <button class="regular" name="Connect" id="Connect" onclick="connect();">Connect </button>
+
+        <button class="regular" name="disconnect" id="disconnect"  onclick="disconnect();"> Disconnect</button>
+        <label id="typing"></label>
+        <button class="regular" name="disconnect" id="typingbtn"  onclick="typing();"> typing</button>
+    </div>
+
+    <br>
+    <br>
+
+    <input class="positive" id="user" type="text" name="name" value="" placeholder="user">
+    <input class="positive" id="msg" type="text" name="name" value="" placeholder="Enter message to send">
+    <br>
+    <button class="negative" name="cancel" id="Send" onclick="sendMsg();">
+        <!--<img src="dba_images/cross.png" alt=""/>-->
+        Send
+
+    </button>
+
+    <br>
+    <br>
+
+    <input class="positive" id="presence" type="text" name="name" value="" placeholder="presence">
+    <br>
+    <button class="negative" name="cancel" id="Sendpresence" onclick="setStatus();">
+        setStatus
+    </button>
+    <label id="presenceOth"></label>
+
+    <br>
+    <br>
+    <input class="positive" id="newmsg" type="text" name="name" value="" >
+
+</div>
+
+<script>
+    function hideElem() {
+
+        document.getElementById("Send").style.visibility = "hidden";
+        document.getElementById("disconnect").style.visibility = "hidden";
+        document.getElementById("msg").style.visibility = "hidden";
+        document.getElementById("user").style.visibility = "hidden";
+        document.getElementById("newmsg").style.visibility = "hidden";
+        document.getElementById("Connect").style.visibility = "visible";
+        document.getElementById("typingbtn").style.visibility = "hidden";
+        document.getElementById("Sendpresence").style.visibility = "hidden";
+        document.getElementById("presence").style.visibility = "hidden";
+        document.getElementById("presenceOth").style.visibility = "hidden";
+    }
+
+    function showElem() {
+        document.getElementById("Connect").style.visibility = "hidden";
+        document.getElementById("Send").style.visibility = "visible";
+        document.getElementById("disconnect").style.visibility = "visible";
+        document.getElementById("msg").style.visibility = "visible";
+        document.getElementById("user").style.visibility = "visible";
+        document.getElementById("newmsg").style.visibility = "visible";
+        document.getElementById("typingbtn").style.visibility = "visible";
+        document.getElementById("Sendpresence").style.visibility = "visible";
+        document.getElementById("presence").style.visibility = "visible";
+        document.getElementById("presenceOth").style.visibility = "visible";
+    }
+    hideElem();
+
+
+</script>
+
+<!--<button type="button" name="button" onclick="connect();">Connect</button>
+<br>
+<input id="name" type="text" name="name" value="" placeholder="Enter your name!">
+<button type="button" name="button" onclick="sendMessage()">Let me chat!</button>-->
+</body>
+</html>
