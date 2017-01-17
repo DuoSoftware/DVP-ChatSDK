@@ -212,7 +212,7 @@ window.SE = function (e) {
     }
 
     function uniqueId() {
-        return new Date().getUTCMilliseconds() + "-" + Math.random().toString(36).substr(2, 16);
+        return new Date().valueOf() + "-" + Math.random().toString(36).substr(2, 16);
     }
 
     var  g = "must pass an object";
