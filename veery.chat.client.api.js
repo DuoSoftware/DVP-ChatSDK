@@ -31,6 +31,13 @@ window.SE = function (e) {
 
         });
 
+        socket.on('connect_error', function(data){
+            console.log("connect_error");
+            if(callBack.OnError){
+                callBack.OnError({method:"connect_error",message: "CONNECTION REFUSED"});
+            }
+        });
+
         socket.on('echo', function(data){
             console.log("OnEcho");
             if(callBack.OnEcho){
