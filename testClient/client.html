@@ -1,6 +1,25 @@
 <!DOCTYPE html>
 <html>
-<head><title>Hello world</title></head>
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+
+    <title>Chat Client</title></head>
 <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 <script src="veery.chat.client.api.js"></script>
 <link href="sdk.css" rel="stylesheet">
@@ -211,15 +230,60 @@
     }
 </script>-->
 <body>
+
+<table>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    <tr>
+        <th colspan="2"><input style="width: 100%"  id="Token" type="text" name="name" value="" placeholder="Enter Token"></th>
+        <td>
+            <button class="regular" name="Connect" id="Connect" onclick="connect();">Login </button>
+            <button class="regular" name="disconnect" id="disconnect"  onclick="disconnect();"> Disconnect</button>
+        </td>
+
+    </tr>
+    <tr>
+        <td colspan="2"><input style="width: 100%"  id="user" type="text" name="name" value="" placeholder="user"></td>
+        <th rowspan="2"><button class="negative" name="cancel" id="Send" onclick="sendMsg();">
+            <!--<img src="dba_images/cross.png" alt=""/>-->
+            Send
+
+        </button></th>
+    </tr>
+    <tr>
+        <td colspan="2"><input class="positive" id="msg" type="text" name="name" value="" placeholder="Enter message to send"></td>
+    </tr>
+    <tr>
+        <td colspan="2"><input class="positive" id="presence" type="text" name="name" value="" placeholder="presence"></td>
+        <td><button class="negative" name="cancel" id="Sendpresence" onclick="setStatus();">
+            setStatus
+        </button></td>
+
+    </tr>
+    <tr>
+        <td>Laughing Bacchus Winecellars</td>
+        <td>Yoshi Tannamuri</td>
+        <td>Canada</td>
+    </tr>
+    <tr>
+        <td>Magazzini Alimentari Riuniti</td>
+        <td>Giovanni Rovelli</td>
+        <td>Italy</td>
+    </tr>
+</table>
+
 <div id="error-container"></div>
 <div class="buttons">
 
-    <input class="positive" id="Token" type="text" name="name" value="" placeholder="Enter Token">
+
     <br>
     <div class="buttons">
-        <button class="regular" name="Connect" id="Connect" onclick="connect();">Connect </button>
 
-        <button class="regular" name="disconnect" id="disconnect"  onclick="disconnect();"> Disconnect</button>
+
+
         <label id="typing"></label>
         <button class="regular" name="disconnect" id="typingbtn"  onclick="typing();"> typing</button>
     </div>
@@ -227,23 +291,17 @@
     <br>
     <br>
 
-    <input class="positive" id="user" type="text" name="name" value="" placeholder="user">
-    <input class="positive" id="msg" type="text" name="name" value="" placeholder="Enter message to send">
-    <br>
-    <button class="negative" name="cancel" id="Send" onclick="sendMsg();">
-        <!--<img src="dba_images/cross.png" alt=""/>-->
-        Send
 
-    </button>
+
+    <br>
+
 
     <br>
     <br>
 
-    <input class="positive" id="presence" type="text" name="name" value="" placeholder="presence">
+
     <br>
-    <button class="negative" name="cancel" id="Sendpresence" onclick="setStatus();">
-        setStatus
-    </button>
+
     <label id="presenceOth"></label>
 
     <br>
