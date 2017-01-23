@@ -53,27 +53,74 @@
     };
 
     var OnStatus =function (o) {
-        console.log("OnStatus..............");
-        document.getElementById('presenceOth').innerHTML = JSON.stringify(o);
+        console.log("OnStatus..............--> "+JSON.stringify(o));
+        document.getElementById('presenceOth').innerText = JSON.stringify(o);
+
+        if (o) {
+            var objMedia = document.getElementById("user");
+            objMedia.options.length = 0;
+            Object.keys(o).forEach(function (key, index) {
+                objMedia.options.add(new Option(key));
+            });
+        }
+
+    };
+
+    var DisplayMessage = function (from,id,message) {
+        var useDiv = document.getElementById(from);
+        if(!useDiv){
+            useDiv = document.createElement('div');
+            useDiv.id = from;
+            useDiv.innerHTML = from;
+            useDiv.style.border = "thick solid green"; // "thin dotted red"; //thick solid green
+            document.getElementById('divnewmsg').appendChild(useDiv);
+        }
+
+        var iDiv = document.createElement('div');
+        iDiv.id = id;
+        iDiv.innerHTML = message;
+        iDiv.style.border = "dotted blue";
+        iDiv.addEventListener("click", function() {
+            seen(from,id);
+        }, false);
+        useDiv.appendChild(iDiv);
     };
 
     var OnMessage =function (o) {
         console.log("OnMessage..............");
-        document.getElementById('typing').innerHTML = "";
+        document.getElementById('typinglbl').value = "";
         document.getElementById('newmsg').value = JSON.stringify(o);
 
+        DisplayMessage(o.from,o.id,o.message);
+
     };
+    var prvid ="root";
     var OnSeen =function (o) {
         console.log("OnSeen..............");
+        var prvDiv = document.getElementById(prvid);
+        if(prvDiv){
+            prvDiv.style.border = "thin solid DarkGrey "; // "thin dotted red"; //thick solid green DarkGoldenRod
+        }
+        var useDiv = document.getElementById(o.id);
+        if(useDiv){
+            if(prvid==="root"){
+                useDiv.style.border = "thin solid DarkGrey ";
+            }
+            else{
+                useDiv.style.border = "solid DarkOrange "; // "thin dotted red"; //thick solid green DarkGoldenRod
+            }
+        }
+        prvid = o.id;
     };
+
     var OnTyping =function (o) {
-        console.log("OnTyping..............");
-        document.getElementById('typing').innerHTML = "Typing..............";
+        console.log("OnTyping..............--> "+JSON.stringify(o));
+        document.getElementById('typinglbl').value = "Typing.............."+JSON.stringify(o);
     };
 
     var OnTypingstoped =function (o) {
         console.log("OnTypingstoped..............");
-        document.getElementById('typing').innerHTML = "";
+        document.getElementById('typinglbl').value = "";
     };
 
     var OnDisconnect =function (o) {
@@ -111,7 +158,7 @@
 
     var connect = function () {
         SE.init({
-            serverUrl: 'http://localhost:33334/',
+            serverUrl: 'http://192.168.5.163:3333/',
             callBackEvents: callBackEvents
         });
     };
@@ -131,13 +178,21 @@
         var userPass = document.getElementById('msg');
         var user = document.getElementById('user');
         var message = {'to':user.value,'message':userPass.value,'type':"text"};
-        SE.sendmessage( message);
+        var o = SE.sendmessage( message);
+
+        DisplayMessage(o.to,o.id,o.message);
+
     }
 
     function setStatus() {
         var user = document.getElementById('presence');
         var message = {'presence':user.value};
         SE.status( message);
+    }
+
+    function seen(to,id) {
+        var t = {to:to , id:id};
+        SE.seen(t);
     }
 
     function request(req) {
@@ -232,50 +287,65 @@
 <body>
 
 <table>
-    <tr>
-        <th></th>
-        <th></th>
-        <th></th>
-    </tr>
-    <tr>
-        <th colspan="2"><input style="width: 100%"  id="Token" type="text" name="name" value="" placeholder="Enter Token"></th>
-        <td>
-            <button class="regular" name="Connect" id="Connect" onclick="connect();">Login </button>
-            <button class="regular" name="disconnect" id="disconnect"  onclick="disconnect();"> Disconnect</button>
-        </td>
 
+    <tr id="Connect">
+        <th colspan="2"><input style="width: 100% ;height: 30px"  id="Token" type="text" name="name" value="" placeholder="Enter Token"></th>
+        <td>
+            <button style="width: 100% ;height: 30px"  name="Connect"  onclick="connect();">Login </button>
+        </td>
     </tr>
-    <tr>
-        <td colspan="2"><input style="width: 100%"  id="user" type="text" name="name" value="" placeholder="user"></td>
-        <th rowspan="2"><button class="negative" name="cancel" id="Send" onclick="sendMsg();">
+    <tr id="disconnect" >
+        <td colspan="3">
+            <button style="width: 100% ;height: 30px"  name="disconnect"  onclick="disconnect();"> Disconnect</button>
+        </td>
+    </tr>
+    <tr id="Send">
+        <td colspan="2">
+
+            <select style="width: 100% ;height: 30px"  name="user" id="user" >
+                <option>select</option>
+            </select>
+        </td>
+        <th rowspan="2"><button style="width: 130px;height: 90px"  name="cancel"  onclick="sendMsg();">
             <!--<img src="dba_images/cross.png" alt=""/>-->
             Send
 
-        </button></th>
+        </button>
+        </th>
     </tr>
-    <tr>
-        <td colspan="2"><input class="positive" id="msg" type="text" name="name" value="" placeholder="Enter message to send"></td>
+
+    <tr id="msgtr">
+        <td colspan="2"><input onblur="typing();" style="width: 100% ;height: 30px" id="msg" type="text" name="name" value="" placeholder="Enter message to send"></td>
     </tr>
-    <tr>
-        <td colspan="2"><input class="positive" id="presence" type="text" name="name" value="" placeholder="presence"></td>
-        <td><button class="negative" name="cancel" id="Sendpresence" onclick="setStatus();">
+    <tr id="Sendpresence">
+        <td colspan="2"><input style="width: 100% ;height: 30px" id="presence" type="text" name="name" value="" placeholder="presence"></td>
+        <td><button style="width: 100% ;height: 30px"  name="cancel"  onclick="setStatus();">
             setStatus
         </button></td>
+    </tr>
 
+    <tr id="presenceOthtr">
+        <td> Presence </td>
+        <td colspan="2"><label id="presenceOth"></label></td>
     </tr>
-    <tr>
-        <td>Laughing Bacchus Winecellars</td>
-        <td>Yoshi Tannamuri</td>
-        <td>Canada</td>
+    <tr id="typingbtn">
+        <td colspan="3"><label id="typinglbl"></label></td>
     </tr>
-    <tr>
-        <td>Magazzini Alimentari Riuniti</td>
-        <td>Giovanni Rovelli</td>
-        <td>Italy</td>
+
+    <tr id="msgDiv">
+        <td colspan="3">
+            <div id="divnewmsg"></div>
+
+        </td>
     </tr>
+
+    <tr id="newmsg1">
+        <td colspan="3"><input id="newmsg" style="width: 100% ;height: 300px"  type="text" name="name" value="" ></td>
+    </tr>
+
 </table>
 
-<div id="error-container"></div>
+<!--<div id="error-container"></div>
 <div class="buttons">
 
 
@@ -302,43 +372,47 @@
 
     <br>
 
-    <label id="presenceOth"></label>
+
 
     <br>
     <br>
-    <input class="positive" id="newmsg" type="text" name="name" value="" >
 
-</div>
+
+</div>-->
 
 <script>
     function hideElem() {
 
-        document.getElementById("Send").style.visibility = "hidden";
-        document.getElementById("disconnect").style.visibility = "hidden";
+        document.getElementById("Send").style.display = 'none';
+        document.getElementById("disconnect").style.display = 'none';
         document.getElementById("msg").style.visibility = "hidden";
         document.getElementById("user").style.visibility = "hidden";
-        document.getElementById("newmsg").style.visibility = "hidden";
-        document.getElementById("Connect").style.visibility = "visible";
+        document.getElementById("newmsg1").style.display = 'none';
+        document.getElementById("Connect").style.display = '';
         document.getElementById("typingbtn").style.visibility = "hidden";
-        document.getElementById("Sendpresence").style.visibility = "hidden";
+        document.getElementById("Sendpresence").style.display = 'none';
         document.getElementById("presence").style.visibility = "hidden";
-        document.getElementById("presenceOth").style.visibility = "hidden";
+        document.getElementById("msgtr").style.display = 'none';
+        document.getElementById("presenceOthtr").style.display = 'none';
+        document.getElementById("divnewmsg").style.display = 'none';
     }
 
     function showElem() {
-        document.getElementById("Connect").style.visibility = "hidden";
-        document.getElementById("Send").style.visibility = "visible";
-        document.getElementById("disconnect").style.visibility = "visible";
+        document.getElementById("Connect").style.display = 'none';
+        document.getElementById("Send").style.display = '';
+        document.getElementById("disconnect").style.display = '';
         document.getElementById("msg").style.visibility = "visible";
         document.getElementById("user").style.visibility = "visible";
-        document.getElementById("newmsg").style.visibility = "visible";
+        document.getElementById("newmsg1").style.display = '';
         document.getElementById("typingbtn").style.visibility = "visible";
         document.getElementById("Sendpresence").style.visibility = "visible";
         document.getElementById("presence").style.visibility = "visible";
-        document.getElementById("presenceOth").style.visibility = "visible";
+        document.getElementById("msgtr").style.display = '';
+        document.getElementById("presenceOthtr").style.display = '';
+        document.getElementById("divnewmsg").style.display = '';
     }
-    hideElem();
 
+    hideElem();
 
 </script>
 
