@@ -116,6 +116,13 @@ window.SE = function (e) {
                 callBack.OnAccept(data);
             }
         });
+
+        socket.on('pending', function (data) {
+            console.log("pending");
+            if (callBack.OnPending) {
+                callBack.OnPending(data);
+            }
+        });
     }
 
     function n(e) {
@@ -157,9 +164,9 @@ window.SE = function (e) {
                 message: m,
                 type: t,
                 id: uniqueId()
-            };
+            }
             socket.emit('message', msg);
-
+            
             return msg;
         } else {
             if (callBack.OnError) {
@@ -259,6 +266,9 @@ window.SE = function (e) {
             }
             else if (r === "latestmessages") {
                 socket.emit('request', {request: 'latestmessages', from: v(e, "from")});
+            }
+            else if (r === "pendingall") {
+                socket.emit('request', {request: 'pendingall'});
             }
             else {
                 if (callBack.OnError) {
