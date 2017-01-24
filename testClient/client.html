@@ -155,7 +155,8 @@
 
     var OnAgent = function (o) {
         console.log("OnAgent..............");
-
+        clientInfo = o;
+        clientInfo.jti = o.name;
         document.getElementById("Send").style.display = '';
         document.getElementById("msg").style.visibility = "visible";
         document.getElementById("newmsg1").style.display = '';
@@ -165,7 +166,15 @@
         document.getElementById("msgtr").style.display = '';
         document.getElementById("presenceOthtr").style.display = '';
         document.getElementById("divnewmsg").style.display = '';
+        document.getElementById("sessionend").style.display = '';
+    };
 
+    var OnSessionend = function (o) {
+        console.log("OnSessionend..............");
+    };
+    var OnLeft = function (o) {
+        console.log("OnLeft..............");
+        disconnect();
     };
 
     var callBackEvents = {
@@ -181,6 +190,8 @@
         OnClient: OnClient,
         OnAccept: OnAccept,
         OnAgent: OnAgent,
+        OnSessionend: OnSessionend,
+        OnLeft: OnLeft,
         OnError: OnError
 
     };
@@ -230,6 +241,12 @@
     function clientconnect() {
         SE.acceptclient({jti:clientInfo.jti});
         showhideclientconnect(false);
+    }
+
+    function sessionend() {
+        var t = {to: clientInfo.jti};
+        SE.sessionend(t);
+        document.getElementById("sessionend").style.display = 'none';
     }
 
 </script>
@@ -340,6 +357,12 @@
         </td>
     </tr>
 
+    <tr id="sessionend">
+        <td>
+            <button style="width: 100% ;height: 30px" name="Connect" onclick="sessionend();">sessionend</button>
+        </td>
+    </tr>
+
     <tr id="Send">
         <td colspan="2">
 
@@ -442,6 +465,7 @@
         document.getElementById("presenceOthtr").style.display = 'none';
         document.getElementById("divnewmsg").style.display = 'none';
         document.getElementById("client").style.display = 'none';
+        document.getElementById("sessionend").style.display = 'none';
     }
 
     function showElem() {

@@ -141,6 +141,30 @@ window.SE = function (e) {
 
             }
         });
+
+        socket.on('existingclient', function(data){
+            console.log("existingclient");
+            if (callBack.OnExistingclient) {
+                callBack.OnExistingclient(data);
+            }
+        });
+
+        socket.on('sessionend', function(data){
+            console.log("sessionend");
+            if (callBack.OnSessionend) {
+                callBack.OnSessionend(data);
+            }
+        });
+
+        socket.on('left', function(data){
+            console.log("left");
+            if (callBack.OnLeft) {
+                callBack.OnLeft(data);
+            }
+        });
+
+
+
     }
 
     function n(e) {
@@ -291,6 +315,21 @@ window.SE = function (e) {
         }
     }
 
+    function se(e) {
+        if (!e)throw g;
+        var r = v(e, "to");
+        if (connected) {
+            socket.emit('sessionend', {
+                to: r
+            });
+        }
+        else {
+            if (callBack.OnError) {
+                callBack.OnError({method: "connection", message: "Connection Lost."});
+            }
+        }
+    }
+
     function vm(e) {
         if (!e)throw g;
         var r = v(e, "type");
@@ -338,6 +377,7 @@ window.SE = function (e) {
         "typing": t,
         "acceptclient": c,
         "disconnect": d,
+        "sessionend": se,
         "status": o,
         'typingstoped': a
     }
