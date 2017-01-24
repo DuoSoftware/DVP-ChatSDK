@@ -123,6 +123,24 @@ window.SE = function (e) {
                 callBack.OnPending(data);
             }
         });
+
+        socket.on('agent', function (data) {
+            console.log("agent");
+            if (callBack.OnAgent) {
+                callBack.OnAgent(data);
+            }
+        });
+
+        socket.on('connectionerror', function(data){
+            console.log("connectionerror");
+
+            if(data === "no_agent_found"){
+                setTimeout(function(){
+                    socket.emit('retryagent',{});
+                }, 10000);
+
+            }
+        });
     }
 
     function n(e) {
@@ -164,9 +182,31 @@ window.SE = function (e) {
                 message: m,
                 type: t,
                 id: uniqueId()
-            }
+            };
             socket.emit('message', msg);
             
+            return msg;
+        } else {
+            if (callBack.OnError) {
+                callBack.OnError({method: "connection", message: "Connection Lost."});
+            }
+        }
+    }
+
+    function cm(e) {
+        if (!e)throw g;
+
+        var m = v(e, "message"), t = v(e, "type");
+        if (connected) {
+            // tell server to execute 'new message' and send along one parameter
+            var msg = {
+                to: 'company',
+                message: m,
+                type: t,
+                id: uniqueId()
+            };
+            socket.emit('message', msg);
+
             return msg;
         } else {
             if (callBack.OnError) {
@@ -292,6 +332,7 @@ window.SE = function (e) {
         "authenticate": n,
         "init": r,
         "sendmessage": m,
+        "sendmessagetocompany": cm,
         "request": vm,
         "seen": s,
         "typing": t,
