@@ -210,8 +210,7 @@
     };
 
     var typing = function () {
-        var user = document.getElementById('user');
-        var message = {'to': user.value};
+        var message = {'to': clientInfo.jti};
         SE.typing(message);
     };
 
