@@ -144,12 +144,12 @@ window.SE = function (e) {
         socket.on('connectionerror', function(data){
             console.log("connectionerror");
 
-            if(data === "no_agent_found"){
+            /*if(data === "no_agent_found"){
                 setTimeout(function(){
                     socket.emit('retryagent',{});
                 }, 10000);
 
-            }
+            }*/
         });
 
         socket.on('existingclient', function(data){
@@ -191,6 +191,7 @@ window.SE = function (e) {
 
         socket.on('authenticated', function () {
             connected = true;
+            console.log("authenticated");
             m("authenticated");
             socket.emit('status', {presence: 'online'});
         });
