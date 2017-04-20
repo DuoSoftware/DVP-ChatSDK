@@ -29,7 +29,7 @@
     var OnConnected = function () {
         console.log("OnConnected..............");
 
-        var token = document.getElementById('Token');
+        var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJkdW9hcmFmYXRoIiwianRpIjoiZDEwNzI1NGEtYTljZC00ZjQxLWI0Y2EtMTI0NDcyZjFkNTBlIiwic3ViIjoiQWNjZXNzIGNsaWVudCIsImV4cCI6MTQ5MzEyODUwOCwidGVuYW50IjoxLCJjb21wYW55IjoxMDMsImNvbnRleHQiOnsicmVzb3VyY2VpZCI6IjQ5IiwidmVlcnlhY2NvdW50Ijp7ImNvbnRhY3QiOiI5NTAyQGR1by5tZWRpYTEudmVlcnkuY2xvdWQiLCJkaXNwbGF5IjoiOTUwMiIsInZlcmlmaWVkIjp0cnVlLCJ0eXBlIjoic2lwIn19LCJzY29wZSI6W3sicmVzb3VyY2UiOiJteU5hdmlnYXRpb24iLCJhY3Rpb25zIjpbInJlYWQiXX0seyJyZXNvdXJjZSI6Im15VXNlclByb2ZpbGUiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiYXJkc3Jlc291cmNlIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6Im5vdGlmaWNhdGlvbiIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJzaXB1c2VyIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InJlcXVlc3RtZXRhIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InN5c21vbml0b3JpbmciLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoibXlVc2VyUHJvZmlsZSIsImFjdGlvbnMiOlsicmVhZCJdfSx7InJlc291cmNlIjoicGFja2FnZSIsImFjdGlvbnMiOlsicmVhZCJdfSx7InJlc291cmNlIjoiZXZlbnRzIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6ImV4dGVybmFsVXNlciIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJ1c2VyR3JvdXAiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoidGlja2V0IiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InRhZyIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJ0aW1lciIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJ0aWNrZXR2aWV3IiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6ImZvcm1zIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6ImVuZ2FnZW1lbnQiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiaW5ib3giLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoidXNlciIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJwcm9kdWN0aXZpdHkiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiZGFzaGJvYXJkZXZlbnQiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiZGFzaGJvYXJkZ3JhcGgiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoic29jaWFsIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InRvZG8iLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoicmVtaW5kIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6ImludGVncmF0aW9uIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6ImZpbGVzZXJ2aWNlIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InRpY2tldHR5cGVzIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InRpY2tldHN0YXR1c2Zsb3ciLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiZXh0ZW5zaW9uIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX0seyJyZXNvdXJjZSI6InF1YWxpdHlhc3N1cmFuY2UiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiY29udGFjdCIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJEaXNwYXRjaCIsImFjdGlvbnMiOlsicmVhZCIsIndyaXRlIiwiZGVsZXRlIl19LHsicmVzb3VyY2UiOiJicmVha3R5cGUiLCJhY3Rpb25zIjpbInJlYWQiLCJ3cml0ZSIsImRlbGV0ZSJdfSx7InJlc291cmNlIjoiZGlhbGVyIiwiYWN0aW9ucyI6WyJyZWFkIiwid3JpdGUiLCJkZWxldGUiXX1dLCJpYXQiOjE0OTI1MjM3MDh9.VefwShveeQ6poVpuySO_Kizb1GcfleFH0HofkCoMxTY' ;/*document.getElementById('Token');*/
 
 
         SE.authenticate({
@@ -45,6 +45,7 @@
 
         document.getElementById("reconnect").style.display = 'none';
     };
+
     var OnEcho = function (o) {
         console.log("OnEcho..............");
     };
@@ -199,10 +200,12 @@
 
     var connect = function () {
         SE.init({
-            serverUrl: 'http://192.168.5.163:3334/',
+            serverUrl: 'http://ipmessagingservice.app.veery.cloud/',
             callBackEvents: callBackEvents
         });
     };
+    
+    connect();
 
     var disconnect = function () {
         SE.disconnect();
@@ -498,5 +501,7 @@
 <br>
 <input id="name" type="text" name="name" value="" placeholder="Enter your name!">
 <button type="button" name="button" onclick="sendMessage()">Let me chat!</button>-->
+
+<div id="uhchat" onclick="uhchatClick()"><iframe id="uhchatframe" src="https://uhchat.net/chat/?f=admin9&amp;title=uhChat%20%7C%20Create%20live%20chat%20embed%20in%20website&amp;parent=https%3A%2F%2Fuhchat.net%2F&amp;ref=https%3A%2F%2Fuhchat.net%2F" width="304px" height="305px" frameborder="0px"></iframe></div>
 </body>
 </html>

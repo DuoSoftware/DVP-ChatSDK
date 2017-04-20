@@ -1,0 +1,13 @@
+#uhchat {
+    width: 320px;
+    height: 305px;
+    display: block;
+    background: url(https://uhchat.net/admin/chat-1.png) no-repeat;
+    text-align: center;
+    padding-top: 45px;
+    position: fixed;
+    bottom: 0px;
+    right: 20px;
+    z-index: 99999999999999;
+    box-sizing: content-box;
+}
