@@ -1,0 +1,541 @@
+<html>
+<head><title>Chat</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Chat">
+    <meta name="keywords" content="Chat">
+    <meta charset="utf-8">
+    <script src="assets/hmac-sha256.js"></script>
+    <script src="assets/enc-base64-min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script src="veery.chat.client.api.js"></script>
+    <style>
+
+        body {
+            background: #fff;
+            font-size: 15px;
+            margin: 0px;
+            word-wrap: break-word;
+            overflow: none;
+            color: #666;
+            line-height: 24px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #06C
+        }
+
+        a:hover {
+            color: #0CF
+        }
+
+        .nhanvien {
+            background: #F7F7F7;
+            display: inline-block;
+            width: 97%;
+            text-align: left;
+            padding: 1px 2px 8px 5px;
+            border-bottom: 1px #ccc solid;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .nhanvien .img {
+            float: left;
+            width: 64px;
+            height: 64px;
+            margin: 0px 5px 0px 0px;
+        }
+
+        .loichao {
+            display: inline-block;
+            width: 97%;
+            text-align: left;
+            padding: 2px 2px 8px 5px;
+        }
+
+        .khach {
+            line-height: 23px;
+            display: inline-block;
+            width: 97%;
+            text-align: left;
+            padding: 2px 2px 4px 5px;
+            border-top: 1px #ccc solid;
+            color: #333;
+        }
+
+        .khach .img {
+            background: #263f68;
+            float: left;
+            width: 32px;
+            height: 32px;
+            margin: 2px 5px 0px 0px;
+        }
+
+        .admin {
+            line-height: 23px;
+            display: inline-block;
+            width: 97%;
+            text-align: right;
+            padding: 2px 5px 4px 2px;
+            border-top: 1px #ccc solid;
+            color: #333;
+        }
+
+        .admin .img {
+            float: right;
+            width: 32px;
+            height: 32px;
+            margin: 2px 0px 0px 5px;
+        }
+
+        img {
+            border: 3px #ccc solid;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        #hopchat {
+            position: fixed;
+            bottom: 0px;
+            right: 0px;
+            width: 100%;
+            text-align: left;
+        }
+
+        #ndht span {
+            color: #CCC;
+            font-size: 12px;
+        }
+
+        #ndht span a {
+            color: #CCC;
+        }
+
+        #ndht span a:hover {
+            color: #000;
+        }
+
+        .danhan {
+            border: 0px !important;
+            float: none !important;
+            width: 11px !important;
+            height: 9px !important;
+        }
+
+        body::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.0);
+            background-color: #3b3b3b;
+        }
+
+        body::-webkit-scrollbar {
+            width: 1px;
+            background-color: #3b3b3b;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #3b3b3b;
+        }
+
+        @media screen and (max-device-width: 480px) {
+            body {
+                -webkit-text-size-adjust: none;
+            }
+        }
+
+        input {
+            border-radius: 0;
+        }
+
+    </style>
+
+    <script>
+
+        function base64url(source) {
+            // Encode in classical base64
+            encodedSource = CryptoJS.enc.Base64.stringify(source);
+
+            // Remove padding equal characters
+            encodedSource = encodedSource.replace(/=+$/, '');
+
+            // Replace characters according to base64url specifications
+            encodedSource = encodedSource.replace(/\+/g, '-');
+            encodedSource = encodedSource.replace(/\//g, '_');
+
+            return encodedSource;
+        }
+
+        function getJsonWebToken(config) {
+            var header = {
+                "alg": "HS256",
+                "typ": "JWT"
+            };
+            var stringifiedHeader = CryptoJS.enc.Utf8.parse(JSON.stringify(header));
+            var encodedHeader = base64url(stringifiedHeader);
+
+            /*------------------------*/
+
+            var d = new Date();
+            d.setDate(d.getDate() + 1);
+
+            var data = {
+                session_id: config.session_id,
+                iss: config.name,
+                iat: d,
+                company: config.company,
+                tenant: config.tenant,
+                contact: config.address,
+                channel: 'chat',
+                jti: config.name,
+                attributes: ["60"],
+                priority: "0",
+                name: config.name
+            };
+
+            var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
+            var encodedData = base64url(stringifiedData);
+
+            /*---------------------*/
+            var signature = encodedHeader + "." + encodedData;
+            signature = CryptoJS.HmacSHA256(signature, config.secret);
+            signature = base64url(signature);
+
+            return encodedHeader + "." + encodedData + "." + signature;
+        }
+
+        /*function login() {
+
+
+
+         var link = "http://www.quirksmode.org/iframetest2.html"
+         var iframe = document.createElement('iframe');
+         iframe.frameBorder = 0;
+         iframe.width = "304px";
+         iframe.height = "305px";
+         iframe.id = "uhchatframe";
+         iframe.setAttribute("src", "http://localhost:63342/DVP-ChatSDK/testClient/chatClientApp.html?veeryToken=" + tok);
+         var element = document.getElementById("uhchat");
+         element.appendChild(iframe);
+         element.className = 'show-uhchat';
+         }*/
+
+
+    </script>
+
+    <script>
+
+        window.onload = function () {
+            document.getElementById("hopchat").style.display = 'none';
+            document.getElementById("main").style.display = 'none';
+            document.getElementById("logchat").style.display = '';
+
+        };
+
+
+        var OnConnected = function () {
+
+            console.log("OnConnected..............");
+
+            //company=103&tenant=1&veeryToken=abcdefgh
+            var tok = decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent("veeryToken").replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+            var company = decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent("company").replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+            var tenant = decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent("tenant").replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+
+            var cData = {
+                session_id: SE.uniqueId(),
+                company: company,
+                tenant: tenant,
+                contact: "test",
+                secret: tok,
+                name: document.getElementById('chatname').value
+            };
+
+
+            var token = getJsonWebToken(cData); // decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent("veeryToken").replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+
+
+            SE.authenticate({
+                success: function (data) {
+                    console.log("authenticated..............");
+                    document.getElementById("hopchat").style.display = '';
+                    document.getElementById("main").style.display = '';
+                    document.getElementById("logchat").style.display = 'none';
+                },
+                error: function (data) {
+                    console.log("authenticate error..............");
+                },
+                token: token
+            });
+
+            var name = decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent("companyName").replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+
+            if(name){
+                var companyName = document.getElementById("companyName");
+                companyName.innerText = name;
+            }
+
+        };
+
+        var OnEcho = function (o) {
+            console.log("OnEcho..............");
+        };
+
+        var OnEvent = function (o) {
+            console.log("OnEvent..............");
+        };
+
+        var OnStatus = function (o) {
+            console.log("OnStatus..............--> " + JSON.stringify(o));
+            //document.getElementById('presenceOth').innerText = JSON.stringify(o);
+
+            if (o) {
+                var objMedia = //document.getElementById("user");
+                        /*objMedia.options.length = 0;*/
+                    Object.keys(o).forEach(function (key, index) {
+                        if (key !== index.toString()) {
+
+                            for (var i = 0; i < objMedia.options.length; i++) {
+                                if (objMedia.options[i].value === key) {
+                                    objMedia.options[i].remove();
+                                }
+                            }
+                            objMedia.options.add(new Option(key));
+
+                        }
+                    });
+            }
+
+        };
+
+        var DisplayMessage = function (from, id, message, direction) {
+            var usendht = document.getElementById("ndht");
+            if (usendht) {
+                if (direction === 'out') {
+                    var useDiv = document.createElement('div');
+                    useDiv.className = "khach";
+
+                    useDiv.innerHTML = '<img src="assets/noavatar.png" alt="" class="img"> ' + message + '<br>  <span id="' + id + '"> Sent at ' + (new Date()).toLocaleTimeString() + '</span> ';
+                    usendht.appendChild(useDiv);
+                    useDiv.scrollIntoView();
+                }
+                else {
+
+                    var useDiv = document.createElement('div');
+                    useDiv.className = "admin";
+                    useDiv.innerHTML = '<img src=' + avatar + ' alt="" class="img"> ' + message + '<br>  <span id="' + id + '"> Seen at ' + (new Date()).toLocaleTimeString() + '</span> ';
+                    usendht.appendChild(useDiv);
+                    useDiv.scrollIntoView();
+                    seen(from, id);
+                }
+
+            }
+        };
+
+        var OnMessage = function (o) {
+            console.log("OnMessage..............");
+            //document.getElementById('typinglbl').value = "";
+            //document.getElementById('newmsg').value = JSON.stringify(o);
+
+            DisplayMessage(o.from, o.id, o.message, 'in');
+
+        };
+
+        var OnSeen = function (o) {
+            console.log("OnSeen..............");
+            var prvDiv = document.getElementById(o.id);
+            if (prvDiv) {
+                prvDiv.innerHTML = "✓ Seen at " + (new Date()).toLocaleTimeString(); // "thin dotted red"; //thick solid green DarkGoldenRod
+            }
+
+        };
+
+        var OnTyping = function (o) {
+            console.log("OnTyping..............--> " + JSON.stringify(o));
+            document.getElementById('typing').style.display = '';
+        };
+
+        var OnTypingstoped = function (o) {
+            console.log("OnTypingstoped..............");
+            document.getElementById('typing').style.display = 'none';
+        };
+
+        var OnDisconnect = function (o) {
+            console.log("OnDisconnect..............");
+            ////document.getElementById("reconnect").style.display = '';
+        };
+
+        var clientInfo = {};
+        var OnClient = function (o) {
+            console.log("OnClient..............");
+            clientInfo = o;
+            showhideclientconnect(true);
+        };
+
+        var OnError = function (o) {
+            console.log("OnError..............");
+        };
+
+        var OnAccept = function (o) {
+            console.log("OnAccept..............");
+        };
+
+        var avatar = '';
+        var OnAgent = function (o) {
+            console.log("OnAgent..............");
+            clientInfo = o;
+            clientInfo.jti = o.name;
+
+            var agentimgElement = document.getElementById("agentimg");
+            agentimgElement.src = o.avatar;
+            avatar = o.avatar;
+
+            var agentElement = document.getElementById("agent");
+            agentElement.innerText = o.name;
+
+            var agentElement = document.getElementById("greeting");
+            agentElement.innerText = '';
+
+
+        };
+
+        var OnSessionend = function (o) {
+            console.log("OnSessionend..............");
+        };
+        var OnLeft = function (o) {
+            console.log("OnLeft..............");
+            disconnect();
+        };
+
+        var callBackEvents = {
+            OnConnected: OnConnected,
+            OnEcho: OnEcho,
+            OnEvent: OnEvent,
+            OnStatus: OnStatus,
+            OnMessage: OnMessage,
+            OnSeen: OnSeen,
+            OnTyping: OnTyping,
+            OnTypingstoped: OnTypingstoped,
+            OnDisconnect: OnDisconnect,
+            OnClient: OnClient,
+            OnAccept: OnAccept,
+            OnAgent: OnAgent,
+            OnSessionend: OnSessionend,
+            OnLeft: OnLeft,
+            OnError: OnError
+
+        };
+
+        var connect = function () {
+            document.getElementById('typing').style.display = 'none';
+            SE.init({
+                serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',
+                callBackEvents: callBackEvents
+            });
+        };
+
+
+        var disconnect = function () {
+            SE.disconnect();
+            hideElem();
+        };
+
+        var typing = function () {
+            var message = {'to': clientInfo.jti, 'from': clientInfo.jti};
+            SE.typing(message);
+        };
+
+        function sendMsg() {
+            var userPass = document.getElementById('ndc');
+            var message = {'message': userPass.value, 'type': "text"};
+            var o = SE.sendmessagetocompany(message);
+
+            DisplayMessage(o.to, o.id, o.message, 'out');
+            userPass.value = '';
+
+        }
+
+        function setStatus() {
+            /*var user = document.getElementById('presence');
+             var message = {'presence': user.value};
+             SE.status(message);*/
+        }
+
+        function seen(to, id) {
+            var t = {to: to, id: id};
+            SE.seen(t);
+        }
+
+        function request(req) {
+            SE.request(req);
+        }
+
+        function clientconnect() {
+            SE.acceptclient({jti: clientInfo.jti});
+            showhideclientconnect(false);
+        }
+
+        function sessionend() {
+            var t = {to: clientInfo.jti};
+            SE.sessionend(t);
+            //document.getElementById("sessionend").style.display = 'none';
+        }
+
+    </script>
+</head>
+<body>
+<div id="main">
+    <div id="loichaobatdau">
+        <div class="nhanvien"><img id="agentimg" src="assets/7fceb432b056c28906b42d8601e8045d.png"
+                                   style="width:64px;height:64px;"
+                                   class="img"><span id="agent"
+                                                     style="font-size:18px;color:black;font-weight:bold;"><img
+                src="assets/online.gif" alt="" style="border:0px;width:16px;height:16px;margin-top:4px;" class="img"> Live Support</span><br>
+
+        </div>
+        <div class="loichao">Welcome to <span id="companyName"></span> Live Support.
+            <br><span id="greeting"> Please wait for human agent to take over.</span>
+        </div>
+        <div class="skype"></div>
+    </div>
+    <div id="ndht" style="padding-bottom: 40px;">
+
+    </div>
+    <div id="typing" style="padding-bottom: 45px;">
+        <span>Typing ...</span>
+    </div>
+</div>
+
+<div id="logchat" style="width:100%;height:40px;background:#3b3b3b;padding:6px 0px 0px 0px;">
+
+    <input spellcheck="false" id="chatname" type="text" maxlength="500"
+           name="noidung"
+           style="width:76%;height:36px;padding:6px 0px 6px 3px;float:left;background:#fff;"
+           placeholder="Enter Email" autocomplete="off">
+
+    <button style="width:20%;height:36px;padding-left:3px;display:inline;float:right;" name="Connect"
+            onclick="connect();">Join
+    </button>
+</div>
+
+<div id="hopchat" style="width:100%;height:40px;background:#3b3b3b;padding:6px 0px 0px 0px;">
+
+    <input spellcheck="false" id="ndc" type="text" maxlength="500"
+           name="noidung"
+           style="width:76%;height:36px;padding:6px 0px 6px 3px;float:left;background:#fff;"
+           placeholder="Message..." autocomplete="off" onkeyup="typing();">
+    <button id="gui" name="gui" style="width:20%;height:36px;padding-left:3px;display:inline;float:right;"
+            onclick="sendMsg();">Send
+    </button>
+
+</div>
+
+<audio id="thongbaochat" preload="none">
+    <source src="assets/new-3.ogg" type="audio/ogg">
+    <source src="assets/new-3.mp3" type="audio/mpeg">
+    <embed height="1px" width="1px" src="assets/new-3.mp3">
+</audio>
+
+</body>
+</html>

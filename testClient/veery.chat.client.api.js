@@ -393,6 +393,8 @@ window.SE = function (e) {
         "disconnect": d,
         "sessionend": se,
         "status": o,
-        'typingstoped': a
+        'typingstoped': a,
+        'uniqueId':uniqueId
     }
 }();
+
