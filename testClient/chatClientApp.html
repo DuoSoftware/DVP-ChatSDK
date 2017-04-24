@@ -271,7 +271,7 @@
 
             var name = decodeURIComponent(window.location.search.replace(new RegExp("^(?:.*[&\\?]" + encodeURIComponent("companyName").replace(/[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
 
-            if(name){
+            if (name) {
                 var companyName = document.getElementById("companyName");
                 companyName.innerText = name;
             }
