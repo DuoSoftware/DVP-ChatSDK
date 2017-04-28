@@ -141,9 +141,8 @@ window.SE = function (e) {
             }
         });
 
-        socket.on('connectionerror', function(data){
-            console.log("connectionerror");
-
+        socket.on('connectionError', function(data){
+            console.log("connectionerror ...");
             /*if(data === "no_agent_found"){
                 setTimeout(function(){
                     socket.emit('retryagent',{});

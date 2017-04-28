@@ -1,35 +1,90 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            /*width: 100%;*/
-        }
+    <title>Chat Client</title>
+</head>
 
-        td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-    </style>
-
-    <title>Chat Client</title></head>
+<link href="assets/css/verry-chat.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=cyrillic" rel="stylesheet">
 
 
-<link href="sdk.css" rel="stylesheet">
+<style type="text/css">
+    .menu-icon {
+        float: right;
+        padding: 10px 15px 10px 10px;
+    }
 
+    .chat-wrp-min {
+        bottom: -310px !important;
+        animation: bounce 0.9s ease infinite;
+    }
+
+    .chat-wrp-max {
+        bottom: 0;
+    }
+</style>
 
 <body>
-<div id="uhchat" onclick="uhchatClick()" class="hide-block">
+<div id="uhchat" class="hide-block chat-wrp-min">
+
+    <div class="header-wrapper">
+        <div class="header">
+            <!-- <div class="chat-state cht-offline"></div> -->
+            Need help ?
+        </div>
+
+        <div class="menu-icon">
+            <a id="downArrow" style="display: none"
+               href="javascript:void(0);"
+               onclick="uhchatClick('downArrow')">
+                <img src="http://console.veery.cloud/DVP-ChatSDK/chat-img/arrow-down.png" width="20"/>
+            </a>
+            <a id="upArrow"
+               href="javascript:void(0);" onclick="uhchatClick('upArrow')">
+                <img src="http://console.veery.cloud/DVP-ChatSDK/chat-img/arrow-up.png" width="20"/>
+            </a>
+        </div>
+    </div>
     <iframe id="uhchatframe"
-            src="http://localhost:63342/DVP-ChatSDK/testClient/chatClientApp.html?companyName=Facetone&company=103&tenant=1&veeryToken=abcdefgh"
+            src="http://localhost:3001/DVP-ChatSDK/testClient/chatClientApp.html?companyName=Facetone&company=103&tenant=1&veeryToken=abcdefgh"
             width="304px" height="305px" frameborder="0px"></iframe>
 </div>
 </body>
+
+<script type="text/javascript">
+
+
+    (function () {
+        var inti_chat = function () {
+
+        };
+    })();
+    //chat window 
+    function uhchatClick(_view_point) {
+        if (_view_point == 'upArrow') {
+            //change main chat wrapper style
+            document.getElementById('uhchat').classList.remove('chat-wrp-min');
+            document.getElementById('uhchat').classList.add('chat-wrp-max');
+
+            //change icon
+            document.getElementById('downArrow').style.display = 'block';
+            document.getElementById('upArrow').style.display = 'none';
+            return;
+        }
+
+        if (_view_point == 'downArrow') {
+            //change main chat wrapper style
+            document.getElementById('uhchat').classList.add('chat-wrp-min');
+            document.getElementById('uhchat').classList.remove('chat-wrp-max');
+
+            //change icon
+            document.getElementById('downArrow').style.display = 'none';
+            document.getElementById('upArrow').style.display = 'block';
+            return;
+        }
+    }
+
+</script>
+
 </html>
