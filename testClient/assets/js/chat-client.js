@@ -25,10 +25,36 @@ var elementAction = function () {
             $btn_connecting.classList.remove('display-none');
         },
         joinFormEnable: function () {
+            //clear all chat
+            document.getElementById("ndht").innerHTML = "";
+
+            //change agent online mode
+            document.getElementById("agentState").classList.remove('chat-online-agent');
+            document.getElementById("agentState").classList.add('chat-offline-agent');
+
             $btn_connecting.classList.add('display-none');
             $btn_connecting.classList.remove('display-block');
             $btn_join.classList.add('display-block');
             $btn_join.classList.remove('display-none');
+
+            document.getElementById("hopchat").style.display = 'none';
+            document.getElementById("main").style.display = 'none';
+            document.getElementById("logchat").style.display = '';
+
+            var agentimgElement = document.getElementById("agentimg");
+            var agentImgOnline = document.getElementById("agentImgOnline");
+            agentimgElement.src = 'assets/img/profileAvatar.png';
+            agentImgOnline.src = 'assets/img/profileAvatar.png';
+            agentImgOnline.style.display = 'none';
+
+            var agentElement = document.getElementById("agent");
+            agentElement.innerText = 'connecting...';
+            agentElement.classList.add("connecting");
+            agentElement.classList.remove("online");
+
+            var error_msg_body = document.getElementById("errorMsgBody");
+            error_msg_body.style.display = '';
+
         },
         inti_load: function () {
             document.getElementById('chatBody').style.display = 'none';
@@ -141,7 +167,7 @@ var OnConnected = function () {
     SE.authenticate({
         success: function (data) {
             console.log("authenticated..............");
-            document.getElementById("hopchat").style.display = '';
+            //document.getElementById("hopchat").style.display = '';
             document.getElementById("main").style.display = '';
             document.getElementById("logchat").style.display = 'none';
         },
@@ -294,15 +320,15 @@ var OnAgent = function (o) {
     avatar = o.avatar;
 
     var agentElement = document.getElementById("agent");
+    agentElement.innerText = o.name;
+    agentElement.classList.remove("connecting");
+    agentElement.classList.add("online");
+
     var connected_msg = document.getElementById("userMessageBody");
     var agent_state = document.getElementById("agentState");
     var error_msg_body = document.getElementById("errorMsgBody");
     var chat_body = document.getElementById("chatBody");
     var agent_state = document.getElementById("agentState");
-
-    agentElement.innerText = o.name;
-    agentElement.classList.remove("connecting");
-    agentElement.classList.add("online");
 
 
     error_msg_body.style.display = 'none';
@@ -311,6 +337,7 @@ var OnAgent = function (o) {
     agent_state.classList.remove("chat-offline-agent");
     agent_state.classList.add("chat-online-agent");
 
+    document.getElementById("hopchat").style.display = 'block';
 
     //  connected_msg.classList.remove('display-block');
     //connected_msg.classList.add('display-none');
@@ -359,7 +386,7 @@ var connect = function () {
     var $typing = document.getElementById('typing');
     document.getElementById('typing').style.display = 'none';
     SE.init({
-        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',
+        serverUrl: 'http://192.168.5.186:8890/',//externalipmessagingservice.app.veery.cloud
         callBackEvents: callBackEvents
     });
 };
@@ -367,9 +394,9 @@ var connect = function () {
 
 var disconnect = function () {
     SE.disconnect();
-    document.getElementById("hopchat").style.display = 'none';
-    document.getElementById("main").style.display = 'none';
-    document.getElementById("logchat").style.display = '';
+
+
+    elementAction.joinFormEnable();
 };
 
 var typing = function () {
