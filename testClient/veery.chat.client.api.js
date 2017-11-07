@@ -7,6 +7,7 @@ window.SE = function (e) {
     var connected = false;
     var socket = {};
     var callBack = {};
+    var t;
 
     function v(e, t) {
         var r = e[t];
@@ -19,7 +20,7 @@ window.SE = function (e) {
 
         var r = v(e, "serverUrl");
         callBack = v(e, "callBackEvents");
-        socket = io(r);
+        socket = io.connect(r,{'forceNew':true });
 
         socket.on('connect', function () {
 
@@ -135,21 +136,31 @@ window.SE = function (e) {
         });
 
         socket.on('agent', function (data) {
+
             console.log("agent");
+            clearTimeout(t);
             if (callBack.OnAgent) {
                 callBack.OnAgent(data);
             }
         });
 
+        socket.on('agent_rejected', function (data) {
+            console.log("connectionerror ...");
+            t = setTimeout(function(){
+                console.log("retryagent ...");
+                socket.emit('retryagent',{});
+            }, 1000);
+        });
+
         socket.on('connectionerror', function(data){
-            console.log("connectionerror");
-
-            /*if(data === "no_agent_found"){
-                setTimeout(function(){
+            console.log("connectionerror ...");
+            if(data === "no_agent_found"){
+                t = setTimeout(function(){
+                    console.log("retryagent ...");
                     socket.emit('retryagent',{});
-                }, 10000);
+                }, 1000);
 
-            }*/
+            }
         });
 
         socket.on('existingclient', function(data){
@@ -161,6 +172,8 @@ window.SE = function (e) {
 
         socket.on('sessionend', function(data){
             console.log("sessionend");
+            socket.disconnect();
+            socket.close();
             if (callBack.OnSessionend) {
                 callBack.OnSessionend(data);
             }
@@ -168,6 +181,8 @@ window.SE = function (e) {
 
         socket.on('left', function(data){
             console.log("left");
+            socket.disconnect();
+            socket.close();
             if (callBack.OnLeft) {
                 callBack.OnLeft(data);
             }
