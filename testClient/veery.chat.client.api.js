@@ -20,7 +20,7 @@ window.SE = function (e) {
 
         var r = v(e, "serverUrl");
         callBack = v(e, "callBackEvents");
-        socket = io.connect(r,{'forceNew':true });
+        socket = io.connect(r,{'forceNew':true,'secure': true, 'port': 3000 });
 
         socket.on('connect', function () {
 
