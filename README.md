@@ -6,131 +6,134 @@ SDK : https://github.com/DuoSoftware/DVP-ChatSDK/blob/Development/veery.chat.cli
 Dependency : https://cdn.socket.io/socket.io-1.4.5.js or
 https://github.com/DuoSoftware/DVP-ChatSDK/blob/Development/socket.io-1.4.5.js
 
-•	Method List
-o	authenticate
-o	init
-o	sendmessage
-o	sendmessagetocompany
-o	request
-o	seen
-o	typing
-o	acceptclient
-o	disconnect
-o	sessionend
-o	status
-o	typingstoped
-o	uniqueId
 
-•	Programing with Facetone Chat SDK
-o	Initializing the engine
-This is the first function to call to initialize the chat engine. You have to use Call back events in order to receive notifications for changes.
+Method List
+authenticate
+init
+sendmessage
+sendmessagetocompany
+request
+seen
+typing
+acceptclient
+disconnect
+sessionend
+status
+typingstoped
+uniqueId
+ 
+Programing with Facetone Chat SDK
+Initialize the engine
+This is the first function to call in order to initialize the chat engines. You have to use an Call back events to be notified for the change
 SE.init({
-    serverUrl:'http://externalipmessagingservice.app.veery.cloud/', 
-    callBackEvents: callBackEvents
+   serverUrl:'http://externalipmessagingservice.app.veery.cloud/',
+   callBackEvents: callBackEvents
 });
-
+ 
 var callBackEvents = {
-    OnConnected: OnConnected,
-    OnEcho: OnEcho,
-    OnEvent: OnEvent,
-    OnStatus: OnStatus,
-    OnMessage: OnMessage, 
-    OnSeen: OnSeen,
-    OnTyping: OnTyping,
-    OnTypingstoped: OnTypingstoped,
-    OnDisconnect: OnDisconnect,
-    OnClient: OnClient,
-    OnExistingclient: OnExistingclient,
-    OnSessionend: OnSessionend,
-    OnLeft: OnLeft,
-    OnAccept: OnAccept,   
-    OnError: OnError,
+	OnConnected: OnConnected,
+	OnEcho: OnEcho,
+	OnEvent: OnEvent,
+	OnStatus: OnStatus,
+	OnMessage: OnMessage,
+	OnSeen: OnSeen,
+	OnTyping: OnTyping,
+	OnTypingstoped: OnTypingstoped,
+	OnDisconnect: OnDisconnect,
+	OnClient: OnClient,
+	OnExistingclient: OnExistingclient,
+	OnSessionend: OnSessionend,
+	OnLeft: OnLeft,
+	OnAccept: OnAccept,  
+	OnError: OnError,
 	OnOldMessages: OnOldMessages,
-    OnLatestMessage: OnLatestMessage,
-    OnPending: OnPending,
-    OnChatStatus: OnChatStatus };
-
-o	OnEcho *
-o	OnEvent *
-o	OnStatus
-	Receive all status updates 
-o	OnMessage
-	Receive message from Agent
-var OnMessage = function (o) {
-    DisplayMessage(o.from, o.id, o.message, 'in');
+	OnLatestMessage: OnLatestMessage,
+	OnPending: OnPending,	OnChatStatus: OnChatStatus 
 };
-	
-o	OnSeen
-	Message read by other party 
-o	OnTyping
-	Client/agent typing message
-o	OnTypingstoped
-	Client/agent stop typing
-o	OnDisconnect
-	Connection lost 
-o	OnClient *
-o	OnAccept *
-o	OnAgent *
-o	OnSessionend 
-	Session ended by other party 
-o	OnExistingclient *
-o	OnLeft
-	Other party left from chat
-o	OnError
-	Fire if an error occurs. 
 
- 		* optional(no need to implement)
-
-o	Register/login
-Registering on the server is required to send messages.
+OnEcho *
+OnEvent *
+OnStatus
+Receive all status updates
+OnMessage
+Receive message from Agent
+var OnMessage = function (o) {
+	DisplayMessage(o.from, o.id, o.message, 'in');
+};
+OnSeen 
+Message read by other party
+OnTyping
+Client/agent typing message
+OnTypingstoped
+Client/agent stop typing
+OnDisconnect
+Connection lost/ chat end by other party 
+OnClient *
+OnAccept *
+OnAgent 
+Assign agent to chat/ chat request accepted
+OnSessionend
+Session ended by other party
+OnExistingclient *
+OnLeft
+Other party left from chat
+OnError
+Fire if there is any error
+              	*optional(no need to implement)
+ 
+Register/login
+Registering to the server is required in order to send messages.
 var OnConnected = function () {
-    
-    SE.authenticate({
-        success: function (data) {
-            console.log("authenticated..............");
-        },
-        error: function (data) {
-            console.log("authenticate error..............");
-        },
-        token: token
+	SE.authenticate({
+    	success: function (data) {
+        	console.log("authenticated..............");
+    	},
+    	error: function (data) {
+        	console.log("authenticate error..............");
+    	},
+    	token: token
     });
 };
-
+ 
 token : JWT TOKEN
-o	Disconnect Chat
+
+Disconnect Chat
 var disconnect = function () {
-    SE.disconnect();
+	SE.disconnect();
 };
-
-o	Send Message 
+ 
+Send Message
 function send_message(msg) {
-    var message = {
-        'message': msg,
-        'type': "text"
-    };
-    var o = SE.sendmessagetocompany(message);
+	var message = {
+    	'message': msg,
+    	'type': "text"
+	};
+	var o = SE.sendmessagetocompany(message);
 }
-
-o	Send message read acknowledgment
+ 
+send message read acknowledgment
 function send_acknowledgment(to, id) {
-    var t = {
-        to: to,
-        id: id
-    };
-    SE.seen(t);
+	var t = {
+    	to: to,
+    	id: id
+	};
+	SE.seen(t);
 }
-
-o	Request method
-	You can request oldmessages, latestmessages
+ 
+Request method
+You can request oldmessages, latestmessages
 var oldmessages = function (requester, from, to, id, who) {
-    SE.request({type: 'previous', requester: requester, from: from, to: to, id: id, who: who});
+	SE.request({type: 'previous', requester: requester, from: from, to: to, id: id, who: who});
 };
-
 
 var latestmessages = function (requester, from, who) {
-    SE.request({type: 'latestmessages', from: from, who: who});
+	SE.request({type: 'latestmessages', from: from, who: who});
 };
+
+
+
 
 
 
  
+
