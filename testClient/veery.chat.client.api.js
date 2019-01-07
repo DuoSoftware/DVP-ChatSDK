@@ -138,18 +138,27 @@ window.SE = function (e) {
         socket.on('agent', function (data) {
 
             console.log("agent");
-            clearTimeout(t);
+
+            if(t) {
+                clearInterval(t);
+                //clearTimeout(t);
+            }
             if (callBack.OnAgent) {
                 callBack.OnAgent(data);
             }
         });
 
+        function retryAgent() {
+            console.log("retryagent ...");
+            socket.emit('retryagent',{});
+        }
+        t = setInterval(retryAgent, 40000);
         socket.on('agent_rejected', function (data) {
             console.log("connectionerror ...");
             t = setTimeout(function(){
                 console.log("retryagent ...");
                 socket.emit('retryagent',{});
-            }, 1000);
+            }, 40000);
         });
 
         socket.on('connectionerror', function(data){
@@ -158,7 +167,7 @@ window.SE = function (e) {
                 t = setTimeout(function(){
                     console.log("retryagent ...");
                     socket.emit('retryagent',{});
-                }, 1000);
+                }, 40000);
 
             }
         });
