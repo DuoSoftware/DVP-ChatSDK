@@ -1,0 +1,250 @@
+<html>
+
+<head>
+    <title>Chat</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Chat">
+    <meta name="keywords" content="Chat">
+    <meta charset="utf-8">
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=cyrillic" rel="stylesheet">
+
+    <link href="assets/css/verry-chat.css" rel="stylesheet">
+
+    <!-- jquery -->
+
+
+    <script type="text/javascript" src="assets/hmac-sha256.js"></script>
+    <script type="text/javascript" src="assets/enc-base64-min.js"></script>
+    <script type="text/javascript" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+    <script type="text/javascript" src="veery.chat.client.api.js"></script>
+
+
+    <style type="text/css">
+        body {
+            background: #fff;
+            font-size: 15px;
+            margin: 0px;
+            word-wrap: break-word;
+            overflow: none;
+            color: #666;
+            line-height: 24px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #06C
+        }
+
+        a:hover {
+            color: #0CF
+        }
+
+        .nhanvien {
+            background: #F7F7F7;
+            display: inline-block;
+            width: 97%;
+            text-align: left;
+            padding: 1px 2px 8px 5px;
+            border-bottom: 1px #ccc solid;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .nhanvien .img {
+            float: left;
+            width: 64px;
+            height: 64px;
+            margin: 0px 5px 0px 0px;
+        }
+
+        .loichao {
+            display: inline-block;
+            width: 97%;
+            text-align: left;
+            padding: 2px 2px 8px 5px;
+        }
+
+        img {
+            border: 3px #ccc solid;
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+        #ndht span {
+            color: #CCC;
+            font-size: 12px;
+        }
+
+        #ndht span a {
+            color: #CCC;
+        }
+
+        #ndht span a:hover {
+            color: #000;
+        }
+
+        .danhan {
+            border: 0px !important;
+            float: none !important;
+            width: 11px !important;
+            height: 9px !important;
+        }
+
+        body::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 0px rgba(0, 0, 0, 0.0);
+            background-color: #3b3b3b;
+        }
+
+        body::-webkit-scrollbar {
+            width: 1px;
+            background-color: #3b3b3b;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: #3b3b3b;
+        }
+
+        @media screen and (max-device-width: 480px) {
+            body {
+                -webkit-text-size-adjust: none;
+            }
+        }
+
+        input {
+            border-radius: 0;
+        }
+
+    </style>
+
+
+</head>
+
+<body>
+<div id="main">
+
+
+    <div id="loichaobatdau">
+        <div class="chat-main-wrapper">
+            <header>
+                <div class="chat-header-wrapper">
+                    <div class="agent-avatar">
+                        <img id="agentimg" src="assets/img/profileAvatar.png" width="50"/>
+                    </div>
+                    <div class="agent-name connecting" id="agent">
+                        connecting...
+                    </div>
+                    <div id="agentState" class="agent-status chat-offline-agent"></div>
+                </div>
+            </header>
+        </div>
+
+        <!-- chat append div -->
+        <section id="errorMsgBody"
+                 class="error-msg-body">
+            <div class="error-msg-wrp">
+                Please wait for human agent to take over.
+            </div>
+        </section>
+
+
+        <section id="chatBody" class="chat-body">
+            <div id="ndht" class="chat-msg-view"></div>
+            <div class="agent-online">
+                <div class="agent-img">
+                    <img id="agentImgOnline" src="assets/img/profileAvatar.png" width="20">
+                </div>
+                <div id="typing"
+                     class="agent-typing">
+                    <span class="typing"></span>
+                    <span class="typing"></span>
+                    <span class="typing"></span>
+                </div>
+
+            </div>
+            <div class="chat-message-wrapper" id="hopchat">
+                <input spellcheck="false" id="ndc" type="text" maxlength="500" name="noidung"
+                       class="chat-txt"
+                       placeholder="Message..."
+                       autocomplete="off"
+                       onfocusout="onFocusOutChat();"
+                       onkeyup="typing();">
+
+                <button id="gui" name="gui"
+                        style="width:20%;height:36px;padding-left:3px;display:inline;float:right; "
+                        onclick="sendMsg();">
+                    Send
+                </button>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- <div id="loichaobatdau">
+      <div class="nhanvien"><img id="agentimg" src="assets/7fceb432b056c28906b42d8601e8045d.png" style="width:64px;height:64px;" class="img"><span id="agent" style="font-size:18px;color:black;font-weight:bold;"><img
+                src="assets/online.gif" alt="" style="border:0px;width:16px;height:16px;margin-top:4px;" class="img"> Live Support</span><br>
+      </div>
+      <div class="loichao">Welcome to <span id="companyName"></span> Live Support.
+        <br><span id="greeting"> Please wait for human agent to take over.</span>
+      </div>
+      <div class="skype"></div>
+    </div>
+    <div id="ndht" style="padding-bottom: 40px;">
+
+    </div>
+    <div id="typing" style="padding-bottom: 45px;">
+      <span>Typing ...</span>
+    </div> -->
+</div>
+
+
+<!-- authentication chat_widget -->
+<div id="logchat">
+    <div class="join-main-wrp">
+        <header>
+            Need to help something? Check out our Help Center
+        </header>
+
+        <div class="block-div" style="margin-top: 10px;">
+            <input spellcheck="false"
+                   class="form-control"
+                   id="chatname" type="text" maxlength="500"
+                   name="noidung"
+                   placeholder="Enter Email" autocomplete="off">
+        </div>
+    </div>
+
+
+    <!-- chat registraion wrapper -->
+
+    <!-- join btn wrapper -->
+    <div id="btnJoin" class="block-div ">
+        <div name="Connect" class="join-btn-wrp" onclick="connect();">
+            join
+        </div>
+    </div>
+    <!-- is loading -->
+    <div id="btnConnecting" class="block-div display-none">
+        <div name="Connect" class="join-btn-wrp">
+            please wait...
+        </div>
+    </div>
+</div>
+
+
+</div>
+<!-- chat body -->
+
+<audio id="thongbaochat " preload="none ">
+    <!--<source src="assets/new-3.ogg " type="audio/ogg ">-->
+    <!--<source src="assets/new-3.mp3 " type="audio/mpeg ">-->
+    <!--<embed height="1px " width="1px " src="assets/new-3.mp3 ">-->
+</audio>
+
+
+</body>
+<script type="text/javascript" src="assets/js/chat-client.js"></script>
+
+</html>
