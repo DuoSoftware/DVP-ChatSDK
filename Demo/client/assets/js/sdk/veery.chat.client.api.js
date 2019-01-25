@@ -243,7 +243,7 @@ window.SE = function (e) {
                 id: uniqueId()
             };
             socket.emit('message', msg);
-            
+
             return msg;
         } else {
             if (callBack.OnError) {

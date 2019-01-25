@@ -2,23 +2,13 @@
 
 <head>
     <title>Chat</title>
-    <meta name="robots" content="noindex, nofollow">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Chat">
-    <meta name="keywords" content="Chat">
     <meta charset="utf-8">
-
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=cyrillic" rel="stylesheet">
-
     <link href="assets/css/verry-chat.css" rel="stylesheet">
 
-    <!-- jquery -->
-
-
-    <script type="text/javascript" src="assets/hmac-sha256.js"></script>
-    <script type="text/javascript" src="assets/enc-base64-min.js"></script>
-    <script type="text/javascript" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-    <script type="text/javascript" src="veery.chat.client.api.js"></script>
+    <script type="text/javascript" src="assets/js/jwt/hmac-sha256.js"></script>
+    <script type="text/javascript" src="assets/js/jwt/enc-base64-min.js"></script>
+    <script type="text/javascript" src="assets/js/sdk/socket.io-1.4.5.js"></script>
+    <script type="text/javascript" src="assets/js/sdk/veery.chat.client.api.js"></script>
 
 
     <style type="text/css">
@@ -124,8 +114,6 @@
 
 <body>
 <div id="main">
-
-
     <div id="loichaobatdau">
         <div class="chat-main-wrapper">
             <header>
@@ -181,22 +169,6 @@
         </section>
     </div>
 
-
-    <!-- <div id="loichaobatdau">
-      <div class="nhanvien"><img id="agentimg" src="assets/7fceb432b056c28906b42d8601e8045d.png" style="width:64px;height:64px;" class="img"><span id="agent" style="font-size:18px;color:black;font-weight:bold;"><img
-                src="assets/online.gif" alt="" style="border:0px;width:16px;height:16px;margin-top:4px;" class="img"> Live Support</span><br>
-      </div>
-      <div class="loichao">Welcome to <span id="companyName"></span> Live Support.
-        <br><span id="greeting"> Please wait for human agent to take over.</span>
-      </div>
-      <div class="skype"></div>
-    </div>
-    <div id="ndht" style="padding-bottom: 40px;">
-
-    </div>
-    <div id="typing" style="padding-bottom: 45px;">
-      <span>Typing ...</span>
-    </div> -->
 </div>
 
 
@@ -233,8 +205,6 @@
     </div>
 </div>
 
-
-</div>
 <!-- chat body -->
 
 <audio id="thongbaochat " preload="none ">

@@ -57,7 +57,8 @@ var elementAction = function () {
 
         },
         inti_load: function () {
-            document.getElementById('chatBody').style.display = 'none';
+            if (document.getElementById('chatBody'))
+                document.getElementById('chatBody').style.display = 'none';
         }
     }
 }();
@@ -119,37 +120,30 @@ function getJsonWebToken(config) {
     return encodedHeader + "." + encodedData + "." + signature;
 }
 
-/*function login() {
-
-
-
- var link = "http://www.quirksmode.org/iframetest2.html"
- var iframe = document.createElement('iframe');
- iframe.frameBorder = 0;
- iframe.width = "304px";
- iframe.height = "305px";
- iframe.id = "uhchatframe";
- iframe.setAttribute("src", "http://localhost:63342/DVP-ChatSDK/testClient/chatClientApp.html?veeryToken=" + tok);
- var element = document.getElementById("uhchat");
- element.appendChild(iframe);
- element.className = 'show-uhchat';
- }*/
-
-
 var OnConnected = function () {
 
     console.log("OnConnected..............");
 
+
     //company=103&tenant=1&veeryToken=abcdefgh
     var tok = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("veeryToken").replace(
-            /[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        /[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     var company = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("company").replace(/[\.\+\*]/g,
-            "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     var tenant = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("tenant").replace(/[\.\+\*]/g,
-            "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+    if (tok === "") {
+        tok = "abcdefgh";
+    }
+    if (company === "") {
+        company = 103;
+    }
+    if (tenant === "") {
+        tenant = 1;
+    }
 
     var cData = {
         session_id: SE.uniqueId(),
@@ -179,7 +173,7 @@ var OnConnected = function () {
 
     var name = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("companyName").replace(
-            /[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+        /[\.\+\*]/g, "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
 
     if (name) {
         //todo
@@ -386,7 +380,7 @@ var connect = function () {
     var $typing = document.getElementById('typing');
     document.getElementById('typing').style.display = 'none';
     SE.init({
-        serverUrl:'http://externalipmessagingservice.app.veery.cloud/',
+        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',
         callBackEvents: callBackEvents
     });
 };
@@ -466,8 +460,8 @@ function onFocusOutChat() {
 var autoLogin = function () {
     var email = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("email").replace(/[\.\+\*]/g,
-            "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
-    if(email&&email!="test@duo.lk"){
+        "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+    if (email && email != "test@duo.lk") {
         document.getElementById('chatname').value = email;
         connect();
     }

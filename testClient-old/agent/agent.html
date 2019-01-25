@@ -20,9 +20,9 @@
     </style>
 
     <title>Chat Agent</title></head>
-<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
-<script src="veery.chat.client.api.js"></script>
-<link href="sdk.css" rel="stylesheet">
+<script src="assets/js/sdk/socket.io-1.4.5.js"></script>
+<script src="assets/js/sdk/veery.chat.client.api.js"></script>
+<link href="assets/css/sdk.css" rel="stylesheet">
 
 <script>
 
@@ -201,7 +201,7 @@
 
     var connect = function () {
         SE.init({
-            serverUrl: 'http://localhost:3333/',
+            serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',
             callBackEvents: callBackEvents
         });
     };
