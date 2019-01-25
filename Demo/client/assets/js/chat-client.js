@@ -343,7 +343,6 @@ var OnAgent = function (o) {
     //var agentElement = document.getElementById("greeting");
     //agentElement.innerText = '';
 
-
 };
 
 var OnSessionend = function (o) {
@@ -393,12 +392,16 @@ var disconnect = function () {
     elementAction.joinFormEnable();
 };
 
-var typing = function () {
+var typing = function (event) {
     var message = {
         'to': clientInfo.jti,
         'from': clientInfo.jti
     };
     SE.typing(message);
+
+    if (event.keyCode == 13) {
+        sendMsg();
+    }
 };
 
 
