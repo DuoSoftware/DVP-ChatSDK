@@ -104,7 +104,7 @@ function getJsonWebToken(config) {
         contact: config.address,
         channel: 'chat',
         jti: config.name,
-        attributes: ["60"],
+        attributes: config.attributes, //  ["60"],
         priority: "0",
         name: config.name
     };
@@ -135,6 +135,10 @@ var OnConnected = function () {
     var tenant = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("tenant").replace(/[\.\+\*]/g,
         "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+
+    var attributes = decodeURIComponent(window.location.search.replace(new RegExp(
+        "^(?:.*[&\\?]" + encodeURIComponent("attributes").replace(/[\.\+\*]/g,
+        "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     if (tok === "") {
         tok = "abcdefgh";
     }
@@ -144,6 +148,11 @@ var OnConnected = function () {
     if (tenant === "") {
         tenant = 1;
     }
+    if (attributes === "" || attributes === "[]") {
+        attributes = ["60"];
+    }else{
+        attributes = attributes.split(",")
+    }
 
     var cData = {
         session_id: SE.uniqueId(),
@@ -151,6 +160,7 @@ var OnConnected = function () {
         tenant: tenant,
         contact: "test",
         secret: tok,
+        attributes: attributes,
         name: document.getElementById('chatname').value
     };
 
@@ -379,7 +389,7 @@ var connect = function () {
     var $typing = document.getElementById('typing');
     document.getElementById('typing').style.display = 'none';
     SE.init({
-        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',
+        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',//'http://externalipmessagingservice.app.veery.cloud/' //'http://103.241.27.73:80/'
         callBackEvents: callBackEvents
     });
 };
