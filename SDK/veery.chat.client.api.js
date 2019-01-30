@@ -11,16 +11,16 @@ window.SE = function (e) {
 
     function v(e, t) {
         var r = e[t];
-        if (!r)throw t + " required";
+        if (!r) throw t + " required";
         return r
     }
 
     function r(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var r = v(e, "serverUrl");
         callBack = v(e, "callBackEvents");
-        socket = io.connect(r,{'forceNew':true,'secure': true, 'port': 3000 });
+        socket = io.connect(r, {'forceNew': true, 'secure': true, 'port': 3000});
 
         socket.on('connect', function () {
 
@@ -139,7 +139,7 @@ window.SE = function (e) {
 
             console.log("agent");
 
-            if(t) {
+            if (t) {
                 clearInterval(t);
                 //clearTimeout(t);
             }
@@ -150,36 +150,38 @@ window.SE = function (e) {
 
         function retryAgent() {
             console.log("retryagent ...");
-            socket.emit('retryagent',{});
+            socket.emit('retryagent', {});
         }
+
         t = setInterval(retryAgent, 40000);
         socket.on('agent_rejected', function (data) {
             console.log("connectionerror ...");
-            t = setTimeout(function(){
+            t = setTimeout(function () {
                 console.log("retryagent ...");
-                socket.emit('retryagent',{});
+                socket.emit('retryagent', {});
             }, 40000);
         });
 
-        socket.on('connectionerror', function(data){
-            console.log("connectionerror ...");
-            if(data === "no_agent_found"){
-                t = setTimeout(function(){
+        socket.on('connectionerror', function (data) {
+            console.log("connectionerror/no agent found... [" + data + "]");
+
+            if (data === "no_agent_found") {
+                t = setTimeout(function () {
                     console.log("retryagent ...");
-                    socket.emit('retryagent',{});
+                    socket.emit('retryagent', {});
                 }, 40000);
 
             }
         });
 
-        socket.on('existingclient', function(data){
+        socket.on('existingclient', function (data) {
             console.log("existingclient");
             if (callBack.OnExistingclient) {
                 callBack.OnExistingclient(data);
             }
         });
 
-        socket.on('sessionend', function(data){
+        socket.on('sessionend', function (data) {
             console.log("sessionend");
             socket.disconnect();
             socket.close();
@@ -188,7 +190,7 @@ window.SE = function (e) {
             }
         });
 
-        socket.on('left', function(data){
+        socket.on('left', function (data) {
             console.log("left");
             socket.disconnect();
             socket.close();
@@ -198,11 +200,10 @@ window.SE = function (e) {
         });
 
 
-
     }
 
     function n(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var r = v(e, "token"), m = v(e, "success"), e = v(e, "error");
         socket.emit('authenticate', {token: r});
@@ -231,7 +232,7 @@ window.SE = function (e) {
     }
 
     function m(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var r = v(e, "to"), m = v(e, "message"), t = v(e, "type");
         if (connected) {
@@ -253,7 +254,7 @@ window.SE = function (e) {
     }
 
     function cm(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var m = v(e, "message"), t = v(e, "type");
         if (connected) {
@@ -275,7 +276,7 @@ window.SE = function (e) {
     }
 
     function s(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var r = v(e, "to"), k = v(e, "id");
         if (connected) {
@@ -289,7 +290,7 @@ window.SE = function (e) {
     }
 
     function t(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var r = v(e, "to");
         var f = v(e, "from");
@@ -307,7 +308,7 @@ window.SE = function (e) {
     }
 
     function a(e) {
-        if (!e)throw g;
+        if (!e) throw g;
 
         var r = v(e, "to");
         var f = v(e, "from");
@@ -325,7 +326,7 @@ window.SE = function (e) {
     }
 
     function c(e) {
-        if (!e)throw g;
+        if (!e) throw g;
         var r = v(e, "jti");
         if (connected) {
             socket.emit('accept', {to: r});
@@ -338,7 +339,7 @@ window.SE = function (e) {
     }
 
     function o(e) {
-        if (!e)throw g;
+        if (!e) throw g;
         var r = v(e, "presence");
         if (connected) {
             socket.emit('status', {presence: r});
@@ -351,7 +352,7 @@ window.SE = function (e) {
     }
 
     function se(e) {
-        if (!e)throw g;
+        if (!e) throw g;
         var r = v(e, "to");
         if (connected) {
             socket.emit('sessionend', {
@@ -366,7 +367,7 @@ window.SE = function (e) {
     }
 
     function vm(e) {
-        if (!e)throw g;
+        if (!e) throw g;
         var r = v(e, "type");
         if (connected) {
             if (r === "previous") {
@@ -418,7 +419,7 @@ window.SE = function (e) {
         "sessionend": se,
         "status": o,
         'typingstoped': a,
-        'uniqueId':uniqueId
+        'uniqueId': uniqueId
     }
 }();
 
