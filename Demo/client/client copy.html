@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<header>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #a3bff1;
+        }
+
+        /* Style the header */
+        header {
+            background-color: #132f66;
+            padding: 30px;
+            text-align: center;
+            font-size: 35px;
+            color: white;
+        }
+    </style>
+    <h2>CLIENT WEB SITE</h2>
+</header>
+
+<link href="assets/css/verry-chat.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=cyrillic" rel="stylesheet">
+
+
+<body>
+<h1>Corporate Website</h1>
+<p>Find out everything you'd like to know about Commercial Bank; from the wide range of products and services we offer,
+    our vision & mission, our history and the latest news about the Bank, our geographical reach etc.</p>
+
+<div id="uhchat" class="hide-block chat-wrp-min">
+
+    <div class="header-wrapper">
+        <div class="header">
+            <!-- <div class="chat-state cht-offline"></div> -->
+            Need help ?
+        </div>
+
+        <div class="menu-icon">
+            <a id="downArrow" style="display: none"
+               href="javascript:void(0);"
+               onclick="uhchatClick('downArrow')">
+                <img src="assets/img/arrow-down.png" width="20"/>
+            </a>
+            <a id="upArrow"
+               href="javascript:void(0);" onclick="uhchatClick('upArrow')">
+                <img src="assets/img/arrow-up.png" width="20"/>
+            </a>
+        </div>
+    </div>
+    <iframe id="uhchatframe"
+            src="../client/chatClientApp.html?companyName=Facetone&company=103&tenant=1&attributes=60&veeryToken=abcdefgh"
+            width="304px" height="305px" frameborder="0px"></iframe>
+</div>
+</body>
+
+<script type="text/javascript">
+
+
+    (function () {
+        var inti_chat = function () {
+
+        };
+    })();
+
+    //chat window
+    function uhchatClick(_view_point) {
+        if (_view_point == 'upArrow') {
+            //change main chat wrapper style
+            document.getElementById('uhchat').classList.remove('chat-wrp-min');
+            document.getElementById('uhchat').classList.add('chat-wrp-max');
+
+            //change icon
+            document.getElementById('downArrow').style.display = 'block';
+            document.getElementById('upArrow').style.display = 'none';
+            return;
+        }
+
+        if (_view_point == 'downArrow') {
+            //change main chat wrapper style
+            document.getElementById('uhchat').classList.add('chat-wrp-min');
+            document.getElementById('uhchat').classList.remove('chat-wrp-max');
+
+            //change icon
+            document.getElementById('downArrow').style.display = 'none';
+            document.getElementById('upArrow').style.display = 'block';
+            return;
+        }
+    }
+
+</script>
+
+</html>
