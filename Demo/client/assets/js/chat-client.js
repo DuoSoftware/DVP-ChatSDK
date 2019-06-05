@@ -96,7 +96,7 @@ function getJsonWebToken(config) {
     d.setDate(d.getDate() + 1);
 
     var data = {
-        session_id: config.session_id,
+        sessionId: config.sessionId,
         iss: config.name,
         iat: d,
         company: config.company,
@@ -119,7 +119,7 @@ function getJsonWebToken(config) {
 
     return encodedHeader + "." + encodedData + "." + signature;
 }
-
+var sessionId = "";
 var OnConnected = function () {
 
     console.log("OnConnected..............");
@@ -154,8 +154,9 @@ var OnConnected = function () {
         attributes = attributes.split(",")
     }
 
+    sessionId = SE.uniqueId();
     var cData = {
-        session_id: SE.uniqueId(),
+        sessionId: sessionId,
         company: company,
         tenant: tenant,
         contact: "test",
@@ -357,6 +358,7 @@ var OnAgent = function (o) {
 
 var OnSessionend = function (o) {
     console.log("OnSessionend..............");
+    disconnect();
 };
 var OnLeft = function (o) {
     console.log("OnLeft..............");
@@ -389,7 +391,7 @@ var connect = function () {
     var $typing = document.getElementById('typing');
     document.getElementById('typing').style.display = 'none';
     SE.init({
-        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',//'http://externalipmessagingservice.app.veery.cloud/'
+        serverUrl: 'http://localhost:8890/',//'http://externalipmessagingservice.app.veery.cloud/'
         callBackEvents: callBackEvents
     });
 };
@@ -405,7 +407,8 @@ var disconnect = function () {
 var typing = function (event) {
     var message = {
         'to': clientInfo.jti,
-        'from': clientInfo.jti
+        'from': clientInfo.jti,
+        'sessionId':sessionId
     };
     SE.typing(message);
 
@@ -419,7 +422,8 @@ function sendMsg() {
     var $text_msg = document.getElementById('ndc');
     var message = {
         'message': $text_msg.value,
-        'type': "text"
+        'type': "text",
+        'sessionId':sessionId
     };
     var o = SE.sendmessagetocompany(message);
 
@@ -437,7 +441,8 @@ function setStatus() {
 function seen(to, id) {
     var t = {
         to: to,
-        id: id
+        id: id,
+        'sessionId':sessionId
     };
     SE.seen(t);
 }
