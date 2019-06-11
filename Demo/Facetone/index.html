@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" >
+
+<head>
+    <meta charset="UTF-8">
+    <title>floating website chat button </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+
+    <link rel="stylesheet" href="./assets/css/verry-chat.css">
+
+
+</head>
+
+<body>
+
+<div class="floating-chat">
+    <i class="fa fa-comments" aria-hidden="true"></i>
+    <div class="chat">
+        <div class="header">
+            <span class="title">
+                welcome to facetone chat
+            </span>
+            <button>
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+
+        </div>
+
+        <ul class="messages">
+            <li class="other">asdasdasasdasdasasdasdasasdasdasasdasdasasdasdasasdasdas</li>
+            <li class="other">Are we dogs??? 🐶</li>
+            <li class="self">no... we're human</li>
+            <li class="other">are you sure???</li>
+            <li class="self">yes.... -___-</li>
+            <li class="other">if we're not dogs.... we might be monkeys 🐵</li>
+            <li class="self">i hate you</li>
+            <li class="other">don't be so negative! here's a banana 🍌</li>
+            <li class="self">......... -___-</li>
+        </ul>
+        <div class="footer log-message">
+            <div class="text-box" contenteditable="true" disabled="true"></div>
+            <button class="sendMessage" id="log">log</button>
+        </div>
+        <div class="footer send-message-off">
+            <div class="text-box" contenteditable="true" disabled="true"></div>
+            <button class="sendMessage" id="sendMessage">send</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="./assets/js/jquery.min.js"></script>
+<script  src="./assets/js/ui_handler_script.js"></script>
+<script  src="./assets/js/jwt/hmac-sha256.js"></script>
+<script  src="./assets/js/jwt/enc-base64-min.js"></script>
+
+<script  src="./assets/js/sdk/socket.io-1.4.5.js"></script>
+<script  src="./assets/js/sdk/veery.chat.client.api.js"></script>
+
+
+
+
+
+</body>
+
+</html>

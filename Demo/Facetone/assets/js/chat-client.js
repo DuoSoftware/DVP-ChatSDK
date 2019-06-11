@@ -391,7 +391,7 @@ var connect = function () {
     var $typing = document.getElementById('typing');
     document.getElementById('typing').style.display = 'none';
     SE.init({
-        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',//'http://externalipmessagingservice.app.veery.cloud/'
+        serverUrl: 'http://localhost:8890/',//'http://externalipmessagingservice.app.veery.cloud/'
         callBackEvents: callBackEvents
     });
 };
