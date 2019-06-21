@@ -102,11 +102,12 @@ function getJsonWebToken(config) {
         company: config.company,
         tenant: config.tenant,
         contact: config.address,
-        channel: 'chat',
+        channel: 'webchat',
         jti: config.name,
         attributes: config.attributes, //  ["60"],
         priority: "0",
-        name: config.name
+        name: config.name,
+        aud:config.company_name
     };
 
     var stringifiedData = CryptoJS.enc.Utf8.parse(JSON.stringify(data));
@@ -139,6 +140,10 @@ var OnConnected = function () {
     var attributes = decodeURIComponent(window.location.search.replace(new RegExp(
         "^(?:.*[&\\?]" + encodeURIComponent("attributes").replace(/[\.\+\*]/g,
         "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
+
+    var company_name = decodeURIComponent(window.location.search.replace(new RegExp(
+        "^(?:.*[&\\?]" + encodeURIComponent("company_name").replace(/[\.\+\*]/g,
+        "\\$&") + "(?:\\=([^&]*))?)?.*$", "i"), "$1"));
     if (tok === "") {
         tok = "abcdefgh";
     }
@@ -147,6 +152,9 @@ var OnConnected = function () {
     }
     if (tenant === "") {
         tenant = 1;
+    }
+    if (company_name === "") {
+        company_name = "facetone";
     }
     if (attributes === "" || attributes === "[]") {
         attributes = ["60"];
@@ -162,7 +170,8 @@ var OnConnected = function () {
         contact: "test",
         secret: tok,
         attributes: attributes,
-        name: document.getElementById('chatname').value
+        name: document.getElementById('chatname').value,
+        company_name:company_name
     };
 
 
@@ -391,7 +400,7 @@ var connect = function () {
     var $typing = document.getElementById('typing');
     document.getElementById('typing').style.display = 'none';
     SE.init({
-        serverUrl: 'http://externalipmessagingservice.app.veery.cloud/',//'http://externalipmessagingservice.app.veery.cloud/'
+        serverUrl: 'http://192.168.0.23:8890/',//'http://externalipmessagingservice.app.veery.cloud/'
         callBackEvents: callBackEvents
     });
 };
