@@ -2,424 +2,442 @@
  * Created by Waruna on 1/13/2017.
  */
 
-window.SE = function (e) {
-    "use strict";
-    var connected = false;
-    var socket = {};
-    var callBack = {};
-    var t;
+window.SE = (function (e) {
+  "use strict";
+  var connected = false;
+  var socket = {};
+  var callBack = {};
+  var t;
 
-    function v(e, t) {
-        var r = e[t];
-        if (!r) throw t + " required";
-        return r
+  function v(e, t) {
+    var r = e[t];
+    if (!r) throw t + " required";
+    return r;
+  }
+
+  function r(e) {
+    if (!e) throw g;
+
+    var r = v(e, "serverUrl");
+    var t = v(e, "token");
+
+    console.log("r", r);
+    console.log("t", t);
+    callBack = v(e, "callBackEvents");
+    socket = io(r, {
+      auth: { token: "Bearer " + t },
+    });
+    // console.log("e");
+    // console.log(e);
+    // console.log(g);
+    // var r = v(e, "serverUrl");
+    // console.log(r);
+    // callBack = v(e, "callBackEvents");
+    // socket = io.connect(r, { forceNew: false, secure: false, port: "" });
+
+    console.log("socket");
+    console.log(socket);
+
+    socket.on("connect", function () {
+      console.log("connected");
+      if (callBack.OnConnected) {
+        callBack.OnConnected();
+      }
+      socket.emit("status", { presence: "online" });
+      //socket.emit('authenticate', {token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdWtpdGhhIiwianRpIjoiMTdmZTE4M2QtM2QyNC00NjQwLTg1NTgtNWFkNGQ5YzVlMzE1Iiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjE4OTMzMDI3NTMsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NjEyOTkxNTN9.YiocvxO_cVDzH5r67-ulcDdBkjjJJDir2AeSe3jGYeA"});
+    });
+
+    socket.on("echo", function (data) {
+      console.log("OnEcho");
+      if (callBack.OnEcho) {
+        callBack.OnEcho(data);
+      }
+    });
+
+    socket.on("event", function (data) {
+      console.log("event");
+      if (callBack.OnEvent) {
+        callBack.OnEvent(data);
+      }
+    });
+
+    socket.on("status", function (data) {
+      console.log("status");
+      if (callBack.OnStatus) {
+        callBack.OnStatus(data);
+      }
+    });
+
+    socket.on("message", function (data) {
+      console.log("message");
+      if (callBack.OnMessage) {
+        callBack.OnMessage(data);
+      }
+
+      // socket.emit('seen',{to: data.to, uuid: data.id});
+    });
+
+    socket.on("latestmessages", function (data) {
+      console.log("latestmessages");
+      if (callBack.OnLatestMessage) {
+        callBack.OnLatestMessage(data);
+      }
+
+      // socket.emit('seen',{to: data.to, uuid: data.id});
+    });
+
+    socket.on("chatstatus", function (data) {
+      console.log("chatstatus");
+      if (callBack.OnChatStatus) {
+        callBack.OnChatStatus(data);
+      }
+
+      // socket.emit('seen',{to: data.to, uuid: data.id});
+    });
+
+    socket.on("seen", function (data) {
+      console.log("seen");
+      if (callBack.OnSeen) {
+        callBack.OnSeen(data);
+      }
+    });
+
+    socket.on("typing", function (data) {
+      console.log("typing");
+      if (callBack.OnTyping) {
+        callBack.OnTyping(data);
+      }
+    });
+
+    socket.on("typingstoped", function (data) {
+      console.log("typingstoped");
+      if (callBack.OnTypingstoped) {
+        callBack.OnTypingstoped(data);
+      }
+    });
+
+    socket.on("disconnect", function (data) {
+      connected = false;
+      console.log("disconnect");
+      if (callBack.OnDisconnect) {
+        callBack.OnDisconnect(data);
+      }
+    });
+
+    socket.on("client", function (data) {
+      console.log("client");
+      if (callBack.OnClient) {
+        callBack.OnClient(data);
+      }
+    });
+
+    socket.on("accept", function (data) {
+      console.log("accept");
+      if (callBack.OnAccept) {
+        callBack.OnAccept(data);
+      }
+    });
+
+    socket.on("pending", function (data) {
+      console.log("pending");
+      if (callBack.OnPending) {
+        callBack.OnPending(data);
+      }
+    });
+
+    socket.on("agent", function (data) {
+      console.log("agent");
+
+      if (t) {
+        clearInterval(t);
+        //clearTimeout(t);
+      }
+      if (callBack.OnAgent) {
+        callBack.OnAgent(data);
+      }
+    });
+
+    function retryAgent() {
+      console.log("retryagent ...");
+      socket.emit("retryagent", {});
     }
 
-    function r(e) {
-        if (!e) throw g;
+    t = setInterval(retryAgent, 40000);
+    socket.on("agent_rejected", function (data) {
+      console.log("connectionerror ...");
+      t = setTimeout(function () {
+        console.log("retryagent ...");
+        socket.emit("retryagent", {});
+      }, 40000);
+    });
 
-        var r = v(e, "serverUrl");
-        callBack = v(e, "callBackEvents");
-        socket = io.connect(r, {'forceNew': true, 'secure': true, 'port': 3000});
+    socket.on("connectionerror", function (data) {
+      console.log("connectionerror/no agent found... [" + data + "]");
 
-        socket.on('connect', function () {
+      if (data === "no_agent_found") {
+        t = setTimeout(function () {
+          console.log("retryagent ...");
+          socket.emit("retryagent", {});
+        }, 40000);
+      }
+    });
 
-            console.log("connected");
-            if (callBack.OnConnected) {
-                callBack.OnConnected();
-            }
-            //socket.emit('authenticate', {token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdWtpdGhhIiwianRpIjoiMTdmZTE4M2QtM2QyNC00NjQwLTg1NTgtNWFkNGQ5YzVlMzE1Iiwic3ViIjoiNTZhOWU3NTlmYjA3MTkwN2EwMDAwMDAxMjVkOWU4MGI1YzdjNGY5ODQ2NmY5MjExNzk2ZWJmNDMiLCJleHAiOjE4OTMzMDI3NTMsInRlbmFudCI6LTEsImNvbXBhbnkiOi0xLCJzY29wZSI6W3sicmVzb3VyY2UiOiJhbGwiLCJhY3Rpb25zIjoiYWxsIn1dLCJpYXQiOjE0NjEyOTkxNTN9.YiocvxO_cVDzH5r67-ulcDdBkjjJJDir2AeSe3jGYeA"});
+    socket.on("existingclient", function (data) {
+      console.log("existingclient");
+      if (callBack.OnExistingclient) {
+        callBack.OnExistingclient(data);
+      }
+    });
 
-        });
+    socket.on("sessionend", function (data) {
+      console.log("sessionend");
+      socket.disconnect();
+      socket.close();
+      if (callBack.OnSessionend) {
+        callBack.OnSessionend(data);
+      }
+    });
 
-        socket.on('echo', function (data) {
-            console.log("OnEcho");
-            if (callBack.OnEcho) {
-                callBack.OnEcho(data);
-            }
-        });
+    socket.on("left", function (data) {
+      console.log("left");
+      socket.disconnect();
+      socket.close();
+      if (callBack.OnLeft) {
+        callBack.OnLeft(data);
+      }
+    });
+  }
 
+  function n(e) {
+    if (!e) throw g;
 
-        socket.on('event', function (data) {
-            console.log("event");
-            if (callBack.OnEvent) {
-                callBack.OnEvent(data);
-            }
-        });
+    var r = v(e, "token"),
+      m = v(e, "success"),
+      e = v(e, "error");
+    console.log("token");
+    console.log(r);
+    socket.emit("authenticate", { token: r });
 
-        socket.on('status', function (data) {
-            console.log("status");
-            if (callBack.OnStatus) {
-                callBack.OnStatus(data);
-            }
-        });
+    socket.on("unauthorized", function (msg) {
+      console.log("msg");
+      console.log(msg);
+      connected = false;
+      console.log("unauthorized: " + JSON.stringify(msg.data));
+      e(new Error(msg.data.type));
+    });
 
-        socket.on('message', function (data) {
-            console.log("message");
-            if (callBack.OnMessage) {
-                callBack.OnMessage(data);
-            }
+    socket.on("authenticated", function () {
+      connected = true;
+      console.log("authenticated");
+      m("authenticated");
+      socket.emit("status", { presence: "online" });
+    });
+  }
 
-            // socket.emit('seen',{to: data.to, uuid: data.id});
+  function d() {
+    connected = false;
+    socket = {};
+    callBack = {};
+    console.log("Disconnected.");
+  }
 
-        });
+  function m(e) {
+    if (!e) throw g;
 
+    var r = v(e, "to"),
+      m = v(e, "message"),
+      t = v(e, "type");
+    if (connected) {
+      // tell server to execute 'new message' and send along one parameter
+      var msg = {
+        to: r,
+        message: m,
+        type: t,
+        id: uniqueId(),
+      };
+      socket.emit("message", msg);
 
-        socket.on('latestmessages', function (data) {
-            console.log("latestmessages");
-            if (callBack.OnLatestMessage) {
-                callBack.OnLatestMessage(data);
-            }
-
-            // socket.emit('seen',{to: data.to, uuid: data.id});
-
-        });
-
-        socket.on('chatstatus', function (data) {
-            console.log("chatstatus");
-            if (callBack.OnChatStatus) {
-                callBack.OnChatStatus(data);
-            }
-
-            // socket.emit('seen',{to: data.to, uuid: data.id});
-
-        });
-
-        socket.on('seen', function (data) {
-            console.log("seen");
-            if (callBack.OnSeen) {
-                callBack.OnSeen(data);
-            }
-        });
-
-        socket.on('typing', function (data) {
-            console.log("typing");
-            if (callBack.OnTyping) {
-                callBack.OnTyping(data);
-            }
-        });
-
-        socket.on('typingstoped', function (data) {
-            console.log("typingstoped");
-            if (callBack.OnTypingstoped) {
-                callBack.OnTypingstoped(data);
-            }
-        });
-
-        socket.on('disconnect', function (data) {
-            connected = false;
-            console.log("disconnect");
-            if (callBack.OnDisconnect) {
-                callBack.OnDisconnect(data);
-            }
-        });
-
-        socket.on('client', function (data) {
-            console.log("client");
-            if (callBack.OnClient) {
-                callBack.OnClient(data);
-            }
-        });
-
-        socket.on('accept', function (data) {
-            console.log("accept");
-            if (callBack.OnAccept) {
-                callBack.OnAccept(data);
-            }
-        });
-
-        socket.on('pending', function (data) {
-            console.log("pending");
-            if (callBack.OnPending) {
-                callBack.OnPending(data);
-            }
-        });
-
-        socket.on('agent', function (data) {
-
-            console.log("agent");
-
-            if (t) {
-                clearInterval(t);
-                //clearTimeout(t);
-            }
-            if (callBack.OnAgent) {
-                callBack.OnAgent(data);
-            }
-        });
-
-        function retryAgent() {
-            console.log("retryagent ...");
-            socket.emit('retryagent', {});
-        }
-
-        t = setInterval(retryAgent, 40000);
-        socket.on('agent_rejected', function (data) {
-            console.log("connectionerror ...");
-            t = setTimeout(function () {
-                console.log("retryagent ...");
-                socket.emit('retryagent', {});
-            }, 40000);
-        });
-
-        socket.on('connectionerror', function (data) {
-            console.log("connectionerror/no agent found... [" + data + "]");
-
-            if (data === "no_agent_found") {
-                t = setTimeout(function () {
-                    console.log("retryagent ...");
-                    socket.emit('retryagent', {});
-                }, 40000);
-
-            }
-        });
-
-        socket.on('existingclient', function (data) {
-            console.log("existingclient");
-            if (callBack.OnExistingclient) {
-                callBack.OnExistingclient(data);
-            }
-        });
-
-        socket.on('sessionend', function (data) {
-            console.log("sessionend");
-            socket.disconnect();
-            socket.close();
-            if (callBack.OnSessionend) {
-                callBack.OnSessionend(data);
-            }
-        });
-
-        socket.on('left', function (data) {
-            console.log("left");
-            socket.disconnect();
-            socket.close();
-            if (callBack.OnLeft) {
-                callBack.OnLeft(data);
-            }
-        });
-
-
+      return msg;
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
     }
+  }
 
-    function n(e) {
-        if (!e) throw g;
+  function cm(e) {
+    if (!e) throw g;
 
-        var r = v(e, "token"), m = v(e, "success"), e = v(e, "error");
-        socket.emit('authenticate', {token: r});
+    var m = v(e, "message"),
+      t = v(e, "type");
+    if (connected) {
+      // tell server to execute 'new message' and send along one parameter
+      var msg = {
+        to: "company",
+        message: m,
+        type: t,
+        id: uniqueId(),
+      };
+      socket.emit("message", msg);
 
-        socket.on('unauthorized', function (msg) {
-            connected = false;
-            console.log("unauthorized: " + JSON.stringify(msg.data));
-            e(new Error(msg.data.type));
+      return msg;
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function s(e) {
+    if (!e) throw g;
+
+    var r = v(e, "to"),
+      k = v(e, "id");
+    if (connected) {
+      socket.emit("seen", { to: r, id: k });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function t(e) {
+    if (!e) throw g;
+
+    var r = v(e, "to");
+    var f = v(e, "from");
+    if (connected) {
+      socket.emit("typing", {
+        to: r,
+        from: f,
+      });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function a(e) {
+    if (!e) throw g;
+
+    var r = v(e, "to");
+    var f = v(e, "from");
+    if (connected) {
+      socket.emit("typingstoped", {
+        to: r,
+        from: f,
+      });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function c(e) {
+    if (!e) throw g;
+    var r = v(e, "jti");
+    if (connected) {
+      socket.emit("accept", { to: r });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function o(e) {
+    if (!e) throw g;
+    var r = v(e, "presence");
+    if (connected) {
+      socket.emit("status", { presence: r });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function se(e) {
+    if (!e) throw g;
+    var r = v(e, "to");
+    if (connected) {
+      socket.emit("sessionend", {
+        to: r,
+      });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
+
+  function vm(e) {
+    if (!e) throw g;
+    var r = v(e, "type");
+    if (connected) {
+      if (r === "previous") {
+        socket.emit("request", {
+          request: "oldmessages",
+          from: v(e, "from"),
+          to: v(e, "to"),
+          id: v(e, "id"),
         });
-
-        socket.on('authenticated', function () {
-            connected = true;
-            console.log("authenticated");
-            m("authenticated");
-            socket.emit('status', {presence: 'online'});
+      } else if (r === "next") {
+        socket.emit("request", {
+          request: "newmessages",
+          from: v(e, "from"),
+          to: v(e, "to"),
+          id: v(e, "id"),
         });
-
-
+      } else if (r === "allstatus") {
+        socket.emit("request", { request: "allstatus" });
+      } else if (r === "latestmessages") {
+        socket.emit("request", {
+          request: "latestmessages",
+          from: v(e, "from"),
+        });
+      } else if (r === "pendingall") {
+        socket.emit("request", { request: "pendingall" });
+      } else if (r === "chatstatus") {
+        socket.emit("request", { request: "chatstatus", from: v(e, "from") });
+      } else {
+        if (callBack.OnError) {
+          callBack.OnError({
+            method: "viewmessage",
+            message: "Invalid View Type.",
+          });
+        }
+      }
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
     }
+  }
 
-    function d() {
-        connected = false;
-        socket = {};
-        callBack = {};
-        console.log("Disconnected.");
-    }
+  function uniqueId() {
+    return (
+      new Date().valueOf() + "-" + Math.random().toString(36).substr(2, 16)
+    );
+  }
 
-    function m(e) {
-        if (!e) throw g;
-
-        var r = v(e, "to"), m = v(e, "message"), t = v(e, "type");
-        if (connected) {
-            // tell server to execute 'new message' and send along one parameter
-            var msg = {
-                to: r,
-                message: m,
-                type: t,
-                id: uniqueId()
-            };
-            socket.emit('message', msg);
-
-            return msg;
-        } else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function cm(e) {
-        if (!e) throw g;
-
-        var m = v(e, "message"), t = v(e, "type");
-        if (connected) {
-            // tell server to execute 'new message' and send along one parameter
-            var msg = {
-                to: 'company',
-                message: m,
-                type: t,
-                id: uniqueId()
-            };
-            socket.emit('message', msg);
-
-            return msg;
-        } else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function s(e) {
-        if (!e) throw g;
-
-        var r = v(e, "to"), k = v(e, "id");
-        if (connected) {
-            socket.emit('seen', {to: r, id: k});
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function t(e) {
-        if (!e) throw g;
-
-        var r = v(e, "to");
-        var f = v(e, "from");
-        if (connected) {
-            socket.emit('typing', {
-                to: r,
-                from: f
-            });
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function a(e) {
-        if (!e) throw g;
-
-        var r = v(e, "to");
-        var f = v(e, "from");
-        if (connected) {
-            socket.emit('typingstoped', {
-                to: r,
-                from: f
-            });
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function c(e) {
-        if (!e) throw g;
-        var r = v(e, "jti");
-        if (connected) {
-            socket.emit('accept', {to: r});
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function o(e) {
-        if (!e) throw g;
-        var r = v(e, "presence");
-        if (connected) {
-            socket.emit('status', {presence: r});
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function se(e) {
-        if (!e) throw g;
-        var r = v(e, "to");
-        if (connected) {
-            socket.emit('sessionend', {
-                to: r
-            });
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function vm(e) {
-        if (!e) throw g;
-        var r = v(e, "type");
-        if (connected) {
-            if (r === "previous") {
-                socket.emit('request', {request: 'oldmessages', from: v(e, "from"), to: v(e, "to"), id: v(e, "id")});
-            }
-            else if (r === "next") {
-                socket.emit('request', {request: 'newmessages', from: v(e, "from"), to: v(e, "to"), id: v(e, "id")});
-            }
-            else if (r === "allstatus") {
-                socket.emit('request', {request: 'allstatus'});
-            }
-            else if (r === "latestmessages") {
-                socket.emit('request', {request: 'latestmessages', from: v(e, "from")});
-            }
-            else if (r === "pendingall") {
-                socket.emit('request', {request: 'pendingall'});
-            }
-            else if (r === "chatstatus") {
-                socket.emit('request', {request: 'chatstatus', from: v(e, "from")});
-            }
-            else {
-                if (callBack.OnError) {
-                    callBack.OnError({method: "viewmessage", message: "Invalid View Type."});
-                }
-            }
-        }
-        else {
-            if (callBack.OnError) {
-                callBack.OnError({method: "connection", message: "Connection Lost."});
-            }
-        }
-    }
-
-    function uniqueId() {
-        return new Date().valueOf() + "-" + Math.random().toString(36).substr(2, 16);
-    }
-
-    var g = "must pass an object";
-    return {
-        "authenticate": n,
-        "init": r,
-        "sendmessage": m,
-        "sendmessagetocompany": cm,
-        "request": vm,
-        "seen": s,
-        "typing": t,
-        "acceptclient": c,
-        "disconnect": d,
-        "sessionend": se,
-        "status": o,
-        'typingstoped': a,
-        'uniqueId': uniqueId
-    }
-}();
-
+  var g = "must pass an object";
+  return {
+    authenticate: n,
+    init: r,
+    sendmessage: m,
+    sendmessagetocompany: cm,
+    request: vm,
+    seen: s,
+    typing: t,
+    acceptclient: c,
+    disconnect: d,
+    sessionend: se,
+    status: o,
+    typingstoped: a,
+    uniqueId: uniqueId,
+  };
+})();
