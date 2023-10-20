@@ -7,6 +7,10 @@ accoridng to abov change ,token were replace in to
 assets/js/chat-client.js--> line 536
 
 to open html file in chat sdk -->external-ipmessaging/Demo/client/client%20copy.html
+then enter message in email placeholder bar and join
+agent console ipmessaging url -- localhost:8889
+
+................................................
 
 Facetone Chat SDK
 SDK : https://github.com/DuoSoftware/DVP-ChatSDK/blob/Development/veery.chat.client.api.js
