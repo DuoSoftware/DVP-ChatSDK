@@ -6,6 +6,8 @@ assets/js/sdk/veery.chat.client.api.js--->line 27
 accoridng to abov change ,token were replace in to
 assets/js/chat-client.js--> line 536
 
+to open html file in chat sdk -->external-ipmessaging/Demo/client/client%20copy.html
+
 Facetone Chat SDK
 SDK : https://github.com/DuoSoftware/DVP-ChatSDK/blob/Development/veery.chat.client.api.js
 
