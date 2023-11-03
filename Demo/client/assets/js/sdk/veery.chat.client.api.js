@@ -221,13 +221,13 @@ window.SE = (function (e) {
     socket.on("unauthorized", function (msg) {
       console.log("msg");
       console.log(msg);
-      connected = false;
+      socket.connected = false;
       console.log("unauthorized: " + JSON.stringify(msg.data));
       e(new Error(msg.data.type));
     });
 
     socket.on("authenticated", function () {
-      connected = true;
+      socket.connected = true;
       console.log("authenticated");
       m("authenticated");
       socket.emit("status", { presence: "online" });
@@ -235,7 +235,7 @@ window.SE = (function (e) {
   }
 
   function d() {
-    connected = false;
+    socket.connected = false;
     socket = {};
     callBack = {};
     console.log("Disconnected.");
@@ -246,14 +246,16 @@ window.SE = (function (e) {
 
     var r = v(e, "to"),
       m = v(e, "message"),
-      t = v(e, "type");
-    if (connected) {
+      t = v(e, "type"),
+      s = v(e, "sessionId");
+    if (socket.connected) {
       // tell server to execute 'new message' and send along one parameter
       var msg = {
         to: r,
         message: m,
         type: t,
         id: uniqueId(),
+        sessionId: s,
       };
       socket.emit("message", msg);
 
@@ -269,14 +271,16 @@ window.SE = (function (e) {
     if (!e) throw g;
 
     var m = v(e, "message"),
-      t = v(e, "type");
-    if (connected) {
+      t = v(e, "type"),
+      s = v(e, "sessionId");
+    if (socket.connected) {
       // tell server to execute 'new message' and send along one parameter
       var msg = {
         to: "company",
         message: m,
         type: t,
         id: uniqueId(),
+        sessionId: s,
       };
       socket.emit("message", msg);
 
@@ -293,7 +297,7 @@ window.SE = (function (e) {
 
     var r = v(e, "to"),
       k = v(e, "id");
-    if (connected) {
+    if (socket.connected) {
       socket.emit("seen", { to: r, id: k });
     } else {
       if (callBack.OnError) {
@@ -307,7 +311,7 @@ window.SE = (function (e) {
 
     var r = v(e, "to");
     var f = v(e, "from");
-    if (connected) {
+    if (socket.connected) {
       socket.emit("typing", {
         to: r,
         from: f,
@@ -324,7 +328,7 @@ window.SE = (function (e) {
 
     var r = v(e, "to");
     var f = v(e, "from");
-    if (connected) {
+    if (socket.connected) {
       socket.emit("typingstoped", {
         to: r,
         from: f,
@@ -339,7 +343,7 @@ window.SE = (function (e) {
   function c(e) {
     if (!e) throw g;
     var r = v(e, "jti");
-    if (connected) {
+    if (socket.connected) {
       socket.emit("accept", { to: r });
     } else {
       if (callBack.OnError) {
@@ -351,7 +355,7 @@ window.SE = (function (e) {
   function o(e) {
     if (!e) throw g;
     var r = v(e, "presence");
-    if (connected) {
+    if (socket.connected) {
       socket.emit("status", { presence: r });
     } else {
       if (callBack.OnError) {
@@ -363,7 +367,7 @@ window.SE = (function (e) {
   function se(e) {
     if (!e) throw g;
     var r = v(e, "to");
-    if (connected) {
+    if (socket.connected) {
       socket.emit("sessionend", {
         to: r,
       });
@@ -377,7 +381,7 @@ window.SE = (function (e) {
   function vm(e) {
     if (!e) throw g;
     var r = v(e, "type");
-    if (connected) {
+    if (socket.connected) {
       if (r === "previous") {
         socket.emit("request", {
           request: "oldmessages",

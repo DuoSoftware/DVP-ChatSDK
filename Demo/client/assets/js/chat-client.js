@@ -121,9 +121,8 @@ function getJsonWebToken(config) {
 var sessionId = "";
 var OnConnected = function () {
   console.log("OnConnected..............");
-      document.getElementById("main").style.display = "";
-      document.getElementById("logchat").style.display = "none";
-
+  document.getElementById("main").style.display = "";
+  document.getElementById("logchat").style.display = "none";
 };
 
 var OnEcho = function (o) {
@@ -234,7 +233,7 @@ var OnClient = function (o) {
 };
 
 var OnError = function (o) {
-  console.log("OnError..............");
+  console.log("OnError.............." + JSON.stringify(o));
 };
 
 var OnAccept = function (o) {
@@ -441,11 +440,12 @@ var typing = function (event) {
 function sendMsg() {
   var $text_msg = document.getElementById("ndc");
   var message = {
+    to: clientInfo.jti,
     message: $text_msg.value,
     type: "text",
     sessionId: sessionId,
   };
-  var o = SE.sendmessagetocompany(message);
+  var o = SE.sendmessage(message);
 
   DisplayMessage(o.to, o.id, o.message, "out");
   $text_msg.value = "";
