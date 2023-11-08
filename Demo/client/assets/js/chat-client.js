@@ -440,12 +440,12 @@ var typing = function (event) {
 function sendMsg() {
   var $text_msg = document.getElementById("ndc");
   var message = {
-    to: clientInfo.jti,
+    // to: clientInfo.jti,
     message: $text_msg.value,
     type: "text",
     sessionId: sessionId,
   };
-  var o = SE.sendmessage(message);
+  var o = SE.sendmessagetocompany(message);
 
   DisplayMessage(o.to, o.id, o.message, "out");
   $text_msg.value = "";
