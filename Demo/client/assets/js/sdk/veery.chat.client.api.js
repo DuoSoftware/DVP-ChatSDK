@@ -351,6 +351,17 @@ window.SE = (function (e) {
       }
     }
   }
+  function rj(e) {
+    if (!e) throw g;
+    var r = v(e, "jti");
+    if (socket.connected) {
+      socket.emit("reject", { to: r });
+    } else {
+      if (callBack.OnError) {
+        callBack.OnError({ method: "connection", message: "Connection Lost." });
+      }
+    }
+  }
 
   function o(e) {
     if (!e) throw g;
@@ -438,6 +449,7 @@ window.SE = (function (e) {
     seen: s,
     typing: t,
     acceptclient: c,
+    rejectclient: rj,
     disconnect: d,
     sessionend: se,
     status: o,

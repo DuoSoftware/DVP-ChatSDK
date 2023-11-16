@@ -102,7 +102,7 @@ function getJsonWebToken(config) {
     contact: config.address,
     channel: "webchat",
     jti: config.name,
-    attributes: config.attributes, //  ["60"],
+    attributes: config.attributes, //  ["133"],
     priority: "0",
     name: config.name,
     aud: config.company_name,
@@ -382,7 +382,7 @@ var connect = function () {
     company_name = "facetone";
   }
   if (attributes === "" || attributes === "[]") {
-    attributes = ["92"];
+    attributes = ["133"];
   } else {
     attributes = attributes.split(",");
   }
