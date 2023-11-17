@@ -413,7 +413,7 @@ var connect = function () {
 
   SE.init({
     token: token,
-    serverUrl: "http://localhost:8890/", //'http://externalipmessagingservice.app.veery.cloud/'
+    serverUrl: "http://192.168.0.23:8890/", //'http://externalipmessagingservice.app.veery.cloud/'
     callBackEvents: callBackEvents,
   });
 };
