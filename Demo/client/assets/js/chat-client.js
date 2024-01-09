@@ -413,7 +413,7 @@ var connect = function () {
 
   SE.init({
     token: token,
-    serverUrl: "http://192.168.0.23:8890/", //'http://externalipmessagingservice.app.veery.cloud/'
+    serverUrl: "http://extipmessagingservice.facetone.lk/", //'http://externalipmessagingservice.app.veery.cloud/' //"http://192.168.0.23:8890/",
     callBackEvents: callBackEvents,
   });
 };
